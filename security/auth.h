@@ -1,9 +1,9 @@
 /*
- * auth.h
- *
- *  Created on: Sep 7, 2016
- *      Author: root
- */
+* auth.h
+*
+*  Created on: Sep 7, 2016
+*      Author: root
+*/
 
 #include <sys/types.h>
 #include <stdlib.h>
@@ -49,13 +49,16 @@
 #define SHADOW_FILE		"/etc/shadow"
 #define USER_FILE		"/etc/passwd"
 
+#define SHADOW_BAK		"/tmp/shadow"
+#define USER_BAK		"/tmp/passwd"
+
 /* default user shell */
 #define USER_SHELL		"/bin/sh"
 
-/* ocs groups ids */
-#define OCS_ADMIN_ID	8100
-#define OCS_OPERATOR_ID	8090
-#define OCS_USER_ID		8080
+/* ocs groups ids derived from /etc/group */
+#define OCS_ADMIN_ID	0   /* group-> root */
+#define OCS_OPERATOR_ID	37	/* group-> operator */
+#define OCS_USER_ID		100	/* group-> user */
 
 /* maximum show or passwd file size */
 #define MAX_FILE_BUFFER		4024
@@ -75,31 +78,36 @@
 
 /* library specific error strings */
 static const char app_error_str[MAX_ERROR_SUPPORT][MAX_ERROR_LENGTH] = {
-		"SUCCESS",			/* 0 */
-		"FAILURE",			/* 1 */
-		"UNKNOWN_ERROR",	/* 2 */
-		"INVALID_PARAM",	/* 3 */
-		"UNSUPPORTED",		/* 4 */
-		"NULL_OBJECT",		/* 5 */
-		"FUNCTION_ERR",		/* 6 */
-		"FILE_IO_ERROR",	/* 7 */
-		"INPUT_BUFF_SIZE",	/* 8 */
-		"INVALID_OPERATION" /* 9 */
+	"SUCCESS",			/* 0 */
+	"FAILURE",			/* 1 */
+	"UNKNOWN_ERROR",	/* 2 */
+	"INVALID_PARAM",	/* 3 */
+	"UNSUPPORTED",		/* 4 */
+	"NULL_OBJECT",		/* 5 */
+	"FUNCTION_ERR",		/* 6 */
+	"FILE_IO_ERROR",	/* 7 */
+	"INPUT_BUFF_SIZE",	/* 8 */
+	"INVALID_OPERATION" /* 9 */
 };
 
 /* ocs defined roles id */
 static const int ocs_group_ids[MAX_GROUP_SUPPORT] = {
-		OCS_ADMIN_ID, /* ocs_admin */
-		OCS_OPERATOR_ID, /* ocs_operator */
-		OCS_USER_ID  /* ocs_user */
+	OCS_ADMIN_ID,	/* admin */
+	OCS_OPERATOR_ID,/* operator */
+	OCS_USER_ID		/* user */
 };
 
 /* ocs defined roles */
 static const char group_names[MAX_GROUP_SUPPORT][MAX_GROUP_LENGTH] = {
-		"ocs_admin",    /* gid_t: 8100 - all read, execute, user and configure */
-		"ocs_operator",	/* gid_t: 8090 - all read and execute  */
-		"ocs_user" 		/* gid_t: 8080 - all read operations  */
+	"admin",    /* gid_t: 0 - all read, execute, user and configure */
+	"operator",	/* gid_t: 27 - all read and execute  */
+	"user" 		/* gid_t: 100 - all read operations  */
 };
+
+typedef enum AUTH_FILE_OP {
+	AUTH_BACKUP = 0,
+	AUTH_RESTORE = 1,
+}auth_file_op;
 
 /* string pointer to application specific error */
 extern char * app_specific_error(int err);
@@ -154,3 +162,9 @@ extern int verify_username_permission(const char *username, int *group_id);
 
 /* verify user authentication given name and password */
 extern int verify_authentication(const char *username, const char *password);
+
+/* returns group id assocaited with the user name */
+extern int get_user_group_id(const char *username, int *group_id);
+
+/* returns group name assocaited with the user name */
+extern int get_user_group_name(const char *username, int length, char *groupname);
