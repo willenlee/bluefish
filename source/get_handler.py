@@ -9,7 +9,10 @@ from pre_settings import rm_mode_enum
 
 import controls.manage_network
 import controls.manage_user
+import controls.manage_logentry
 
+import time
+import datetime
 
 def execute_get_request_queries (query_list, init_values = dict ()):
     """
@@ -223,16 +226,33 @@ def get_bmc_log_services ():
 
 @auth_basic (authentication.validate_user)
 def get_bmc_log ():
-    return view_helper.return_redfish_resource ("bmc_log")  
+    result = {}
+    result["DateTime"] = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
+    
+    return view_helper.return_redfish_resource ("bmc_log", values = result)  
 
 @auth_basic (authentication.validate_user)
 def get_bmc_log_entries ():
-    return view_helper.return_redfish_resource ("bmc_log_entries")
+    query = [
+        (controls.manage_logentry.get_event_log_all, {})
+    ]
+
+    result = execute_get_request_queries (query)
+    
+    return view_helper.return_redfish_resource ("bmc_log_entries", values = result)
     
 @auth_basic (authentication.validate_user)
 def get_bmc_log_entry (entry):
-    return view_helper.return_redfish_resource ("bmc_log_entry")    
+    query = [
+        (controls.manage_logentry.get_event_log, {"log_id": entry})
+    ]
+
+    result = execute_get_request_queries (query)
     
+    if "Id" not in result:
+        raise HTTPError (status = 404)
+   
+    return view_helper.return_redfish_resource ("bmc_log_entry", values = result)
     
 @auth_basic (authentication.validate_user)
 def get_bmc_serialinterfaces ():

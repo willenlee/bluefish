@@ -1,57 +1,31 @@
 {
-    %if defined ("members"):
-	    % for  i, (k, v) in enumerate(members.iteritems()):   
-		     % if isinstance(v, dict):
-			    % for l, (ks, vs) in enumerate(v.iteritems()): 
-			    	   <% if l != len(v)-1:
-				            tag = ","               
-				        else: 
-				            tag = ""
-				        end %>
-			           
-			    	  % if ks == "RecordId":
-							"@odata.id": "/redfish/v1/Managers/1/LogServices/Log/Entry/{{Entry}}",
-							"@odata.type": "#LogEntry.v1_0_2.LogEntry",
-							"@odata.context": "/redfish/v1/$metadata#Managers/Members/1/LogServices/Members/Log/Entries/Members/$entry",
-			    	        "Id": "Entry{{Entry}}",
-							"Name": "Log Entry {{Entry}}",
-						    "MessageId": {{Entry}}{{tag}}	        
-	    			  % elif ks == "SensorType":
-	    			        "SensorType": "{{vs}}"{{tag}}
-	    			  % elif ks == "Severity":
-	    			        "Severity": "{{vs}}"{{tag}}
-	    			  % elif ks == "Created":
-	    			        "Created": "{{vs}}"{{tag}}
-	    			  % elif ks == "Message":
-	    			        "Message": "{{vs}}"{{tag}}
-			          % elif ks == "Oem":
-			          		 "Oem": {
-				                "Microsoft": {
-	        						"@odata.type": "#Ocs.v1_0_0.LogEntry",
-				                    % if isinstance(vs, dict):
-									    % for j, (koem, voem) in enumerate(vs.iteritems()):
-									    	  <% if j != len(vs)-1:
-										            eol = ","               
-										       else: 
-										            eol = ""
-										     end %>
-									            
-									    	  % if koem == "Component":
-								                    "Component": "{{voem}}"{{eol}}	        
-						        			  % elif koem == "PortId":
-						        			        "PortId": "{{voem}}"{{eol}}
-					        			      % elif koem == "DeviceId":
-						        			        "DeviceId": "{{voem}}"{{eol}}		
-				        			          % elif koem == "FanId":
-						        			        "FanId": "{{voem}}"{{eol}}			        			      		
-					        			      % end
-			        			      	% end
-		        			      	% end
-				                }
-				             }{{tag}}
-			    	  % end
-	    		% end
-	        % end
-	 	% end 
- 	% end       
+    "@Redfish.Copyright": "Copyright 2014-2016 Distributed Management Task Force, Inc. (DMTF). All rights reserved.",
+    "@odata.context": "/redfish/v1/$metadata#LogEntryCollection.LogEntryCollection",
+    "@odata.id": "/redfish/v1/Managers/1/LogServices/Log/Entries",
+    "@odata.type": "#LogEntryCollection.LogEntryCollection",
+    "Name": "Log Service Collection",
+    "Description": "Collection of Logs for this System",
+    "members@odata.count": 1,
+    "members": [
+        {
+          "@odata.id": "/redfish/v1/Managers/1/LogServices/Log1/Entries/{{Id}}",
+          "@odata.type": "#LogEntry.v1_0_0.LogEntry",
+          "Id": "{{Id}}",
+          "Name": "Log Entry {{Id}}",
+          "EntryType": "SEL",
+          "ExpanderIndex": "{{ExpanderIndex}}",
+          "Severity": "{{Severity}}",
+          "Created": "{{Created}}",
+          "SensorType": "{{SensorType}}",
+          "SensorNumber": "{{SensorNumber}}",
+          "Message": "{{Message}}",
+          "Links": {
+            "OriginOfCondition": {
+              "@odata.id": "/redfish/v1/Chassis/StorageEnclosure{{ExpanderIndex}}"
+            },
+            "Oem": {}
+          },
+          "Oem": {}
+        }
+    ]
 }

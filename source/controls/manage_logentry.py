@@ -1,42 +1,85 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
+import os
+import dbus
+import dbus.service
+import collections
 
-from controls.bladelog_lib import read_server_log
-from controls.manage_rack_manager import get_rack_manager_log
-from utils import *
+from obmc.dbuslib.bindings import get_dbus, DbusProperties, DbusObjectManager
 
-def get_logentry(entry_id, log_id, type, device_id):
-    ret = {}
-    ret["members"] = {}
-        
-    log_id = int(log_id)
+bus = get_dbus()
 
-    if type == 'system' and log_id == 1:
-        output = read_server_log(int(device_id), False)
-        
-    elif type == 'chassis' and log_id == 1:
-        if device_id == "rackmanager":
-            output = get_rack_manager_log('/usr/persist/ocstelemetry.log', False)
-                        
-        elif branch_id == "rowmanager":
-            return set_failure_dict("Rowmanager log is not available", completion_code.failure)
-        
-        else:
-            return set_failure_dict("Requested log is not available", completion_code.failure)
-    else:
-        return set_failure_dict("Requested log is not available", completion_code.failure)
-                                            
-    if entry_id == 0:
-        ret["members"] = output["members"]
-    elif entry_id in output["members"]:       
-        ret["members"] = output["members"][entry_id]
+EVENT_LOG_PATH = '/var/lib/obmc/events/'
 
-    ret["entry_type"] = "SEL"
-    ret["log_count"] = len(ret["members"])
-    ret["id"] = device_id
-    ret["type"] = type
+DBUS_SERVICE_NAME = 'org.openbmc.records.events'
+DBUS_OBJECT_PATH = '/org/openbmc/records/events/'
+DBUS_INTERFACE = 'org.freedesktop.DBus.Properties'
+
+DBUS_EVENT_LOG_INTERFACE = 'org.openbmc.recordlog'
+DBUS_EVENT_LOG_PROPERTY_INTERFACE = 'org.openbmc.record'
+
+def clear_event_log():
+    interface.clear("")
     
-    return ret
+    print("Clear all event log!")
+    
+    return None
 
+def get_event_log(log_id):
+    event_log_object_path = DBUS_OBJECT_PATH + log_id
+
+    try:
+        object = bus.get_object(DBUS_SERVICE_NAME, event_log_object_path)
+        interface = dbus.Interface(object, DBUS_INTERFACE)
+
+        result = interface.GetAll(DBUS_EVENT_LOG_PROPERTY_INTERFACE)
+
+        #print "Get event log ", log_id, "\n", result
+        #print "\n".join(("%s: %s" % (k, result[k]) for k in result))
     
+    except Exception, e:
+        print "!!! DBus error !!!\n"
+            
+    for property_name in result:
+        if property_name == 'time':
+            date_time = result[property_name]
+        if property_name == 'message':
+            message = result[property_name]
+        if property_name == 'severity':
+            severity = result[property_name]
+        if property_name == 'expander_index':
+            expander_index = result[property_name]
+        if property_name == 'sensor_type':
+            sensor_type = result[property_name]
+        if property_name == 'sensor_number':
+            sensor_number = result[property_name]
     
+    result = {}
+    result['Id'] = log_id
+    result['ExpanderIndex'] = str(expander_index)
+    result['Severity'] = str(severity)
+    result['Created'] = str(date_time)
+    result['SensorType'] = str(sensor_type)
+    result['SensorNumber'] = str(sensor_number)
+    result['Message'] = str(message)
+    
+    return result
+    
+def get_event_log_count():
+    for root, dirs, files in os.walk(EVENT_LOG_PATH):
+        event_log_count = len(files)
+    
+    return event_log_count
+    
+def get_event_log_all():
+    result = {}
+    result['members'] = collections.OrderedDict()
+ 
+    for root, dirs, files in os.walk(EVENT_LOG_PATH):
+        event_log_count = len(files)
+
+    event_log_count += 1
+
+    for index in range(1, event_log_count):
+        entry = get_event_log(str(index))
+        result['members'][str(index)] = entry
+    return result 
+ 

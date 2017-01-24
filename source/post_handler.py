@@ -65,10 +65,14 @@ def check_action_result (result, success_code = 200, fail_code = 500):
 ###################
 @auth_basic (authentication.validate_user)
 def post_bmc_clear_log ():
-    pre_check_function_call (op_category_enum.set_rackmanager_state)
+    query = [
+        (controls.manage_logentry.clear_event_log, {})
+    ]
+
+    result = execute_get_request_queries (query)
     
-    result = controls.manage_rack_manager.clear_rack_manager_telemetry_log ()
-    return check_action_result (result)
+    return view_helper.return_redfish_resource ("bmc_log_entry", values = result)    
+
 
 
 #####################
