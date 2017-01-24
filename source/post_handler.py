@@ -7,6 +7,7 @@ from controls.utils import completion_code
 from view_helper import parameter_parser
 import controls.manage_rack_manager
 import controls.manage_user
+import controls.manage_logentry
 
 def validate_action_parameters (validation):
     """
@@ -65,15 +66,9 @@ def check_action_result (result, success_code = 200, fail_code = 500):
 ###################
 @auth_basic (authentication.validate_user)
 def post_bmc_clear_log ():
-    query = [
-        (controls.manage_logentry.clear_event_log, {})
-    ]
-
-    result = execute_get_request_queries (query)
+    result = controls.manage_logentry.clear_event_log()
     
-    return view_helper.return_redfish_resource ("bmc_log_entry", values = result)    
-
-
+    return check_action_result (result)    
 
 #####################
 # Chassis components

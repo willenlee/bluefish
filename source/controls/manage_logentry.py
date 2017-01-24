@@ -4,27 +4,34 @@ import dbus.service
 import collections
 
 from obmc.dbuslib.bindings import get_dbus, DbusProperties, DbusObjectManager
+from utils import completion_code
 
 bus = get_dbus()
 
 EVENT_LOG_PATH = '/var/lib/obmc/events/'
 
 DBUS_SERVICE_NAME = 'org.openbmc.records.events'
-DBUS_OBJECT_PATH = '/org/openbmc/records/events/'
+DBUS_OBJECT_PATH = '/org/openbmc/records/events'
 DBUS_INTERFACE = 'org.freedesktop.DBus.Properties'
 
 DBUS_EVENT_LOG_INTERFACE = 'org.openbmc.recordlog'
 DBUS_EVENT_LOG_PROPERTY_INTERFACE = 'org.openbmc.record'
 
 def clear_event_log():
+    object = bus.get_object(DBUS_SERVICE_NAME, DBUS_OBJECT_PATH)
+    interface = dbus.Interface(object, DBUS_EVENT_LOG_INTERFACE)
+
     interface.clear("")
     
     print("Clear all event log!")
     
-    return None
+    result = {}
+    result[completion_code.cc_key] = completion_code.success
+
+    return result
 
 def get_event_log(log_id):
-    event_log_object_path = DBUS_OBJECT_PATH + log_id
+    event_log_object_path = DBUS_OBJECT_PATH + "/" + log_id
 
     try:
         object = bus.get_object(DBUS_SERVICE_NAME, event_log_object_path)
