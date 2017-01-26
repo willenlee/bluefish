@@ -86,6 +86,11 @@ static int mutex_initialize(pthread_mutex_t *mutex){
 	int response = 0;
     pthread_mutexattr_t mutex_attrib;
 
+        if((response = pthread_mutexattr_init(&mutex_attrib)) != 0){
+                syslog(LOG_ERR, "OCSLOCK Mutex_Attrib Initialize failed: mutexattr_init() resp(%d) error(%s)\n", response, strerror(errno));
+                 return response;
+        }
+
 	if((response = pthread_mutexattr_setpshared(&mutex_attrib, PTHREAD_PROCESS_SHARED)) != 0){
 		syslog(LOG_ERR, "OCSLOCK Mutex Initialize failed: mutexattr_setpshared() resp(%d) error(%s)\n", response, strerror(errno));
 		return response;
