@@ -5,7 +5,6 @@ from bottle import HTTPError, auth_basic
 from authentication import pre_check_function_call
 from pre_settings import command_name_enum
 from controls.utils import set_failure_dict, completion_code
-from pre_settings import rm_mode_enum
 
 import controls.manage_network
 import controls.manage_user
@@ -176,7 +175,13 @@ def get_chassis_storage_enclosure_disk (se_id, disk_id):
 #########################
 @auth_basic (authentication.validate_user)
 def get_bmc (patch = dict ()):
-    return view_helper.return_redfish_resource ("bmc")
+    query = [
+        (controls.manage_fwversion.get_ocsfwversion, {})
+    ]
+
+    result = execute_get_request_queries(query)
+    view_helper.update_and_replace_status_information(result, patch)
+    return view_helper.return_redfish_resource ("bmc", values = result)
 
 
 @auth_basic (authentication.validate_user)
@@ -209,9 +214,10 @@ def get_bmc_ethernet (eth, patch = dict ()):
     ]
     
     result = execute_get_request_queries (query)
-        
+    print "result"
+    print result
     if ("InterfaceStatus" in result):
-        result["InterfaceStatus"] = str (enums.Status (
+        result["InterfaceStatus"] = str (enums.State (
             str(result["InterfaceStatus"]), convert = True))
     
     result["Intf"] = eth

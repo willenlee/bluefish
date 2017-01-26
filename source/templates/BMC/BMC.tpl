@@ -25,21 +25,19 @@
   },
   "SerialConsole": {
     "ServiceEnabled": true,
-    "MaxConcurrentSessions": 1,
+    "MaxConcurrentSessions": 4,
     "ConnectTypesSupported": [
-      "Telnet",
       "SSH"
     ]
   },
   "CommandShell": {
     "ServiceEnabled": true,
-    "MaxConcurrentSessions": 4,
+    "MaxConcurrentSessions": 1,
     "ConnectTypesSupported": [
-      "Telnet",
       "SSH"
     ]
   },
-  "FirmwareVersion": "1.00",
+  "FirmwareVersion": "{{Package}}",
   "NetworkProtocol": {
     "@odata.id": "/redfish/v1/Managers/1/NetworkProtocol"
   },
@@ -53,11 +51,7 @@
     "@odata.id": "/redfish/v1/Managers/1/LogServices"
   },
   "Links": {
-    "ManagerForServers": [
-      {
-        "@odata.id": "/redfish/v1/Systems/1"
-      }
-    ],
+
     "ManagerForChassis": [
       {
         "@odata.id": "/redfish/v1/Chassis/1"
@@ -76,7 +70,17 @@
         "GracefulRestart"
       ]
     },
-    "Oem": {}
+    "Oem": {
+        "#Manager.FirmwareUpdate.Prepare": {
+            "target": "/redfish/v1/Managers/1/Actions/Manager.FirmwareUpdate.Prepare"
+        },
+        "#Manager.FirmwareUpdate.Apply": {
+            "target": "/redfish/v1/Managers/1/Actions/Manager.FirmwareUpdate.Apply"
+        },
+        "#Manager.FirmwareUpdate.Progress": {
+            "target": "/redfish/v1/Managers/1/Actions/Manager.FirmwareUpdate.Progress"
+        }
+    }
   },
   "Oem": {}
 }

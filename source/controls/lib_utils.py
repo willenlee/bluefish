@@ -10,7 +10,6 @@ auth_lib = '/usr/lib/libauth.so'
 precheck_lib = '/usr/lib/libocsprecheck.so'
 pru_lib = '/usr/lib/libocspru.so'
 blademap_lib = "/usr/lib/libocsblademap.so"
-audit_lib = "/usr/lib/libocsaudit.so"
 
 def load_library(path, name):
     if os.path.isfile(path) :
@@ -23,8 +22,7 @@ def load_library(path, name):
     
     return binary
     
-def get_audit_library():
-    return load_library(audit_lib, "ocsaudit")
+
 
 def get_gpio_library():
     return load_library(gpio_lib, "ocsgpio")

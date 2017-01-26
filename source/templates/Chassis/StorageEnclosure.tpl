@@ -196,8 +196,11 @@
       }
 
     ],
-
-    "Oem": {}
+    "Oem": {
+       "#PowerControl": {
+            "target": "/redfish/v1/Chassis/StorageEnclosure{{ID}}/Actions/PowerControl"
+       }
+    }
 
   },
 

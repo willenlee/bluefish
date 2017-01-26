@@ -2,10 +2,8 @@ import authentication
 import view_helper
 from bottle import HTTPError, auth_basic
 from authentication import pre_check_function_call
-from pre_settings import command_name_enum
 from controls.utils import completion_code
 from view_helper import parameter_parser
-import controls.manage_rack_manager
 import controls.manage_user
 import controls.manage_logentry
 

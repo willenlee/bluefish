@@ -3,8 +3,7 @@ import get_handler
 import patch_handler
 import post_handler
 import delete_handler
-from pre_settings import rm_mode_enum
-from authentication import get_op_mode
+
 
 TEMPLATE_ROOT = os.path.realpath ("/usr/lib/redfish/templates") + "/"
 
@@ -13,7 +12,7 @@ class redfish_resource:
     Defines a single resource accessible via the REST interface.
     """
     
-    def __init__ (self, common = None, pmdu = None, row = None, stand_alone = None,
+    def __init__ (self, common = None,
         get = None, post = None, patch = None, delete = None):
         """
         Initialize a resource to be provided by the REST interface.  The resource is initialized
@@ -22,16 +21,7 @@ class redfish_resource:
         
         :param common: A tuple of URI and template path for a resource that is common to all
         configurations.  If not specified, the specific configuration settings will be applied.
-        :param pmdu: A tuple of URI and template path for the resource when configured as a rack
-        manager with a PMDU.  If not specified, the resource will not be available in the PMDU rack
-        manager configuration unless the information is provided as a common resource.
-        :param row: A tuple of URI and template path for the resource when configured as a row
-        manager.  If not specified, the resource will not be available in the row manager
-        configuration unless the information is provided as a common resource.
-        :param stand_alone: A tuple of URI and template path for the resource when configured as a
-        stand-alone rack manager.  If not specified, the resource will not be available in the
-        stand-alone rack manager configuration unless the information is provided as a common
-        resource.
+
         :param get: The handler for GET requests for the resource.  If not specified, GET requests
         on the resource will not be supported.
         :param post: The handler for POST requests for the resource.  If not specified, POST
@@ -43,36 +33,22 @@ class redfish_resource:
         """
         
         self.common = common
-        self.pmdu = pmdu
-        self.row = row
-        self.stand_alone = stand_alone
         self.get = get
         self.post = post
         self.patch = patch
         self.delete = delete
         
-    def register_resource (self, app, mode):
+    def register_resource (self, app):
         """
         Register the resource with the REST handler.  If the resource is not valid for the given
         configuration, this call does nothing.
         
         :param app: The web server instance to register the resource with.
-        :param mode: The manager configuration that should be registered.
         """
         
         if (self.common):
             self.rest = self.common[0]
             self.template = TEMPLATE_ROOT + self.common[1]
-        elif (self.pmdu and ((mode == rm_mode_enum.pmdu_rackmanager) or
-            (mode == rm_mode_enum.tfb_dev_benchtop) or (mode == rm_mode_enum.unknown_rm_mode))):
-            self.rest = self.pmdu[0]
-            self.template = TEMPLATE_ROOT + self.pmdu[1]
-        elif (self.row and (mode == rm_mode_enum.rowmanager)):
-            self.rest = self.row[0]
-            self.template = TEMPLATE_ROOT + self.row[1]
-        elif (self.stand_alone and (mode == rm_mode_enum.standalone_rackmanager)):
-            self.rest = self.stand_alone[0]
-            self.template = TEMPLATE_ROOT + self.stand_alone[1]
         else:
             self.rest = None
             
@@ -96,22 +72,21 @@ def get_max_num_systems ():
     :return The maximum number of systems.
     """
     
-    return 24 if (get_op_mode () == rm_mode_enum.standalone_rackmanager) else 48
+    return 4
 
-REGEX_1_48 = "[1-3][0-9]|4[0-8]|[1-9]"
-REGEX_1_24 = "1[0-9]|2[0-4]|[1-9]"
+REGEX_1_4 = "[1-4]"
 
 def id_filter (config):
     """
     A bottle router filter that matches valid identifier numbers.  Based on the config, it will
-    match against 24 or 48 valid IDs.
+    match against 4 valid IDs.
     
-    :param config: The number of IDs to filter against.  This defaults to 48 if not sepeified or if
+    :param config: The number of IDs to filter against.  This defaults to 4 if not sepeified or if
     the range isn't supported.
     """
     
-    valid = config or 48
-    regex = REGEX_1_24 if (int (valid) == 24) else REGEX_1_48
+
+    regex = REGEX_1_4
     
     def to_python (match):
         return match
@@ -281,44 +256,44 @@ REDFISH_RESOURCES = {
     ############################
     # Account service components
     ############################
-    "account_service" : redfish_resource (
-        common = (
-            "/redfish/v1/AccountService",
-            "AccountService/AccountService.tpl"),
-        get = get_handler.get_account_service),
-    "accounts" : redfish_resource (
-        common = (
-            "/redfish/v1/AccountService/ManagerAccounts",
-            "AccountService/ManagerAccounts.tpl"),
-        get = get_handler.get_accounts,
-        post = post_handler.post_accounts),
-    "account" : redfish_resource (
-        common = (
-            "/redfish/v1/AccountService/ManagerAccount/<account>",
-            "AccountService/ManagerAccount.tpl"),
-        get = get_handler.get_account,
-        patch = patch_handler.patch_account,
-        delete = delete_handler.delete_account),
-    "roles" : redfish_resource (
-        common = (
-            "/redfish/v1/AccountService/Roles",
-            "AccountService/Roles.tpl"),
-        get = get_handler.get_roles),
-    "admin" : redfish_resource (
-        common = (
-            "/redfish/v1/AccountService/Role/admin",
-            "AccountService/ocs_admin.tpl"),
-        get = get_handler.get_ocs_admin),
-    "operator" : redfish_resource (
-        common = (
-            "/redfish/v1/AccountService/Role/operator",
-            "AccountService/ocs_operator.tpl"),
-        get = get_handler.get_ocs_operator),
-    "user" : redfish_resource (
-        common = (
-            "/redfish/v1/AccountService/Role/user",
-            "AccountService/ocs_user.tpl"),
-        get = get_handler.get_ocs_user),
+#    "account_service" : redfish_resource (
+#        common = (
+#            "/redfish/v1/AccountService",
+#            "AccountService/AccountService.tpl"),
+#        get = get_handler.get_account_service),
+#    "accounts" : redfish_resource (
+#        common = (
+#            "/redfish/v1/AccountService/ManagerAccounts",
+#            "AccountService/ManagerAccounts.tpl"),
+#        get = get_handler.get_accounts,
+#        post = post_handler.post_accounts),
+#    "account" : redfish_resource (
+#        common = (
+#            "/redfish/v1/AccountService/ManagerAccount/<account>",
+#            "AccountService/ManagerAccount.tpl"),
+#        get = get_handler.get_account,
+#        patch = patch_handler.patch_account,
+#        delete = delete_handler.delete_account),
+#    "roles" : redfish_resource (
+#        common = (
+#            "/redfish/v1/AccountService/Roles",
+#            "AccountService/Roles.tpl"),
+#        get = get_handler.get_roles),
+#    "admin" : redfish_resource (
+#        common = (
+#            "/redfish/v1/AccountService/Role/admin",
+#            "AccountService/ocs_admin.tpl"),
+#        get = get_handler.get_ocs_admin),
+#    "operator" : redfish_resource (
+#        common = (
+#            "/redfish/v1/AccountService/Role/operator",
+#            "AccountService/ocs_operator.tpl"),
+#        get = get_handler.get_ocs_operator),
+#    "user" : redfish_resource (
+#        common = (
+#            "/redfish/v1/AccountService/Role/user",
+#            "AccountService/ocs_user.tpl"),
+#        get = get_handler.get_ocs_user),
     
 
 }

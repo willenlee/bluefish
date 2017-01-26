@@ -6,30 +6,13 @@ from ctypes import c_int, byref, c_char_p
 from bottle import request, HTTPError
 from controls.manage_user import group_id_from_usr_name
 from controls.lib_utils import get_precheck_library, get_authentication_library
-from pre_settings import rm_mode, rm_mode_enum
-    
-def get_op_mode ():
-    try:
-        precheck_binary = get_precheck_library ()
-            
-        i = c_int ()
-        output = precheck_binary.get_rm_mode (byref (i))
-        
-        if (output == 0):
-            manager_mode = rm_mode (i.value)
-        else:
-            manager_mode = rm_mode_enum.unknown_rm_mode
-            
-    except Exception as error:
-        ocslog.log_error ("Failed to get manager mode", error)
-        manager_mode = rm_mode_enum.unknown_rm_mode
-        
-    return manager_mode
+
+
     
 def pre_check_function_call (op_category, device_id = 0):
     return  #TODO#
     try:
-        # Log request in audit log        
+        # Log request in audit log
         username = get_current_username ()
         ocsaudit_rest_log_command (request.method, request.url, request.url_args, username)
         
@@ -38,9 +21,8 @@ def pre_check_function_call (op_category, device_id = 0):
         gp_id = c_int (get_current_role ())
         op_id = c_int (int (op_category))
         dev_id = c_int (int (device_id))
-        mode_id = c_int (int (get_op_mode ()))
         
-        output = precheck_binary.pre_check (gp_id, op_id, dev_id, mode_id)
+        output = precheck_binary.pre_check (gp_id, op_id, dev_id)
         
     except Exception as error:
         ocslog.log_error ("Exception calling pre-check manager", error)

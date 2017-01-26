@@ -52,19 +52,12 @@
 
   "Telnet": {
 
-    "ProtocolEnabled": true,
+    "ProtocolEnabled": false,
 
     "Port": 23
 
   },
 
-  "KVMIP": {
-
-    "ProtocolEnabled": true,
-
-    "Port": 5288
-
-  },
 
   "Oem": {}
 

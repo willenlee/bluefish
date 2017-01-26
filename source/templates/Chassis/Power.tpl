@@ -12,66 +12,7 @@
 
   "Name": "Power",
 
-  "PowerControl": [
 
-    {
-      "@odata.id": "/redfish/v1/Chassis/1/Power#/PowerControl/0",
-
-      "MemberId": "0",
-
-      "Name": "System Power Control",
-
-      "PowerConsumedWatts": 8000,
-
-      "PowerRequestedWatts": 8500,
-
-      "PowerAvailableWatts": 8500,
-
-      "PowerCapacityWatts": 10000,
-
-      "PowerAllocatedWatts": 8500,
-
-      "PowerMetrics": {
-
-        "IntervalInMin": 30,
-
-        "MinConsumedWatts": 7500,
-
-        "MaxConsumedWatts": 8200,
-
-        "AverageConsumedWatts": 8000
-
-        },
-        "PowerLimit": {
-
-        "LimitInWatts": 9000,
-
-        "LimitException": "LogEventOnly",
-
-        "CorrectionInMs": 42
-
-      },
-      "RelatedItem": [
-
-        {
-
-          "@odata.id": "/redfish/v1/Chassis/1"
-
-        }
-
-      ],
-      "Status": {
-
-        "State": "Enabled",
-
-        "Health": "OK"
-
-      },
-
-      "Oem": {}
-    }   
-
-  ],  
   "Voltages": [
 
     {
@@ -354,23 +295,9 @@
 
       ]
 
-    },
-
-    {
-
-      "@odata.id": "/redfish/v1/Chassis/1/Power#/PowerSupplies/2",
-
-      "MemberId": "2",
-
-      "Name": "Power Supply Bay 3",
-
-      "Status": {
-
-        "State": "Absent"
-
-      }
-
     }
+
+
 
   ],
 

@@ -8,7 +8,7 @@ from pre_settings import command_name_enum
 from controls.utils import set_failure_dict, completion_code
 from view_helper import parameter_parser
 from netaddr import IPAddress
-import controls.manage_rack_manager
+import controls.manage_bmc
 import controls.manage_network
 import controls.manage_user
 
@@ -204,24 +204,13 @@ def patch_bmc ():
     pre_check_function_call (op_category_enum.set_rackmanager_config)
     
     actions = {
-        "Oem/Microsoft/HostName" : (controls.manage_rack_manager.set_hostname,
+        "Oem/Microsoft/HostName" : (controls.manage_bmc.set_hostname,
             parameter_parser ("hostname", str), {}),
-        "Oem/Microsoft/TFTP/Status" : (controls.manage_rack_manager.set_manager_tftp_service_state,
-            parameter_parser ("state", str, enums.ServiceStatus), {}),
-        "Oem/Microsoft/TFTP/Enabled" : (controls.manage_rack_manager.set_manager_tftp_service_config,
-            parameter_parser ("enable", bool, parameter_parser.validate_bool), {}),
-        "Oem/Microsoft/NFS/Status" : (controls.manage_rack_manager.set_manager_nfs_service_state,
-            parameter_parser ("state", str, enums.ServiceStatus), {}),
-        "Oem/Microsoft/NFS/Enabled" : (controls.manage_rack_manager.set_manager_nfs_service_config,
-            parameter_parser ("enable", bool, parameter_parser.validate_bool), {}),
-        "Oem/Microsoft/NTP/Status" : (controls.manage_rack_manager.set_manager_ntp_service_state,
-            parameter_parser ("state", str, enums.ServiceStatus), {}),
-        "Oem/Microsoft/NTP/Enabled" : (controls.manage_rack_manager.set_manager_ntp_service_config,
-            parameter_parser ("enable", bool, parameter_parser.validate_bool), {}),
+
     }
     
     result = validate_patch_request_and_execute (actions, "bmc")
-    return get_handler.get_rack_manager (patch = result)
+    return get_handler.manage_bmc (patch = result)
 
 
 @auth_basic (authentication.validate_user)

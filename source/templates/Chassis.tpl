@@ -3,7 +3,7 @@
     "@odata.context": "/redfish/v1/$metadata#Chassis",
     "@odata.id": "/redfish/v1/Chassis",
     "Name": "Chassis Collection",
-    "Members@odata.count": 52,
+    "Members@odata.count": 5,
     "Members": [
         {
             "@odata.id": "/redfish/v1/Chassis/1"

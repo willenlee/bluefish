@@ -24,7 +24,7 @@
 
   "InterfaceEnabled": true,
 
-  "SignalType": "Rs232",
+  "SignalType": "UART",
 
   "BitRate": "115200",
 
@@ -36,8 +36,8 @@
 
   "FlowControl": "None",
 
-  "ConnectorType": "RJ45",
+  "ConnectorType": "TTL UART Debug Header",
 
-  "PinOut": "Cyclades"
+  "PinOut": "5V, 3.3vRX, 3.3vTX, Ground"
 
 }

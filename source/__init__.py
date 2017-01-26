@@ -10,8 +10,7 @@ try:
 except Exception as error:
     print "Failed to initialize the ocslog", error
     
-mode = authentication.get_op_mode ()
-ocslog.log_info ("Running in configuration ", mode)
+
 
 import bottle
 import resources
@@ -25,4 +24,4 @@ class msocs_bottle (bottle.Bottle):
 app = msocs_bottle (__name__)
 resources.add_bottle_filters (app)
 for resource in resources.REDFISH_RESOURCES.itervalues ():
-    resource.register_resource (app, mode)
+    resource.register_resource (app)

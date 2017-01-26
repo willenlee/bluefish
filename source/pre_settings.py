@@ -8,82 +8,6 @@ from ctypes import *
 from controls.utils import *
 from utils_print import print_response
 
-rm_id = None
-group_id = None
-user_name = None
-manager_mode = None
-
-is_get_rm_call = False
-is_set_rm_call = False
-is_rm_config_call = False
-
-log_lib = '/usr/lib/libocslog.so'
-log_binary = None
-
-if os.path.isfile(log_lib) and log_binary is None:
-    log_binary = ctypes.cdll.LoadLibrary(log_lib)
-    
-precheck_lib = '/usr/lib/libocsprecheck.so'
-precheck_binary = None
-
-if os.path.isfile(precheck_lib) and precheck_binary is None:
-    precheck_binary = ctypes.cdll.LoadLibrary(precheck_lib)
-    
-auth_lib = '/usr/lib/libocsauth.so'
-auth_binary = None
-
-if os.path.isfile(auth_lib) and auth_binary is None:
-    auth_binary = ctypes.cdll.LoadLibrary(auth_lib)
-    
-class mode:
-    pmdu = "PMDU"
-    standalone = "STANDALONE"
-    row = "ROW"
-    
-class rm_mode:
-    """
-    Enumration defination for the type of manager mode.
-    """
-    map = {
-           0 : "PMDU_RACKMANAGER",
-           1 : "STANDALONE_RACKMANAGER",
-           2 : "ROWMANGER",
-           3 : "UNKNOWN_RM_MODE",           
-           4 : "TFB_DEV_BENCHTOP"           
-    }
-    
-    def __init__(self,value):
-        self.value = int(value)
-        
-    def __str__(self):
-        return rm_mode.map[self.value]
-    
-    def __repr__(self):
-        return str (self.value)
-    
-    def __int__(self):
-        return self.value
-    
-    def __eq__ (self, other):
-        if isinstance (other, rm_mode):
-            return self.value == other.value
-        return NotImplemented
-    
-    def __ne__ (self, other):
-        result = self.__eq__ (other)
-        if result is NotImplemented:
-            return result
-        return not result
-    
-class rm_mode_enum:
-    """
-    Enumertaion constants for the manager mode.
-    """
-    pmdu_rackmanager = rm_mode(0)
-    standalone_rackmanager = rm_mode(1)
-    rowmanager = rm_mode(2)
-    unknown_rm_mode = rm_mode(3)
-    tfb_dev_benchtop = rm_mode(4)
 
 class command_name:
     """
@@ -141,32 +65,6 @@ def initialize_log():
     
     return 0
 
-def get_rm_mode():
-    global manager_mode   
-    global rm_id 
-    global precheck_binary
-    try:
-        if precheck_binary is None:
-            precheck_binary = ctypes.cdll.LoadLibrary(precheck_lib)
-            
-        i = c_int();
-            
-        output = precheck_binary.get_rm_mode(byref(i))
-
-        if output != 0:
-            #log_error("Failed to get manager mode using precheck library.", output)
-            #print "Failed to get manager mode using precheck library.", output
-            return -1            
-        else:
-            manager_mode = rm_mode(i.value)
-            rm_id = i.value
-
-    except Exception,e:   
-        #log_error("failed to get rm mode",e)
-        #print "Exception to get rm mode",e
-        return -1
-    
-    return output
     
 def verify_caller_permission():
     global group_id
@@ -267,42 +165,3 @@ def pre_check_helper (cmd_name, cache, device_id):
         return True
     else:
         return pre_check_manager (repr (cmd_name), device_id) 
-    
-def mode_request():
-    try:
-        if manager_mode == None:
-            return None
-        
-        if manager_mode == rm_mode_enum.pmdu_rackmanager or \
-           manager_mode == rm_mode_enum.tfb_dev_benchtop or \
-           manager_mode == rm_mode_enum.standalone_rackmanager:    
-            return "rm" 
-        elif manager_mode == rm_mode_enum.rowmanager:
-            return "row"
-        else:
-            print("Invalid manager mode")
-            return None
-        
-    except Exception, e:
-        print "mode_request Exception: {0}".format(e)
-        return None
-    
-def get_mode():
-    try:
-        if manager_mode == None:
-            return None
-        
-        if manager_mode == rm_mode_enum.pmdu_rackmanager or \
-           manager_mode == rm_mode_enum.tfb_dev_benchtop:
-            return mode.pmdu 
-        elif manager_mode == rm_mode_enum.standalone_rackmanager: 
-            return mode.standalone
-        elif manager_mode == rm_mode_enum.rowmanager:
-            return mode.row
-        else:
-            return None
-        
-    except Exception, e:
-        print "get_mode Exception: {0}".format(e)
-        return None
-    
