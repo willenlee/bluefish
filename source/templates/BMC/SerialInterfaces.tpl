@@ -18,7 +18,7 @@
 
     {
 
-      "@odata.id": "/redfish/v1/Managers/1/SerialInterfaces/1"
+      "@odata.id": "/redfish/v1/Managers/1/SerialInterface/1"
 
     }
 

@@ -4,7 +4,7 @@
 
   "@odata.context": "/redfish/v1/$metadata#SerialInterface.SerialInterface",
 
-  "@odata.id": "/redfish/v1/Managers/1/SerialInterfaces/1",
+  "@odata.id": "/redfish/v1/Managers/1/SerialInterface/1",
 
   "@odata.type": "#SerialInterface.v1_0_0.SerialInterface",
 
@@ -38,6 +38,6 @@
 
   "ConnectorType": "TTL UART Debug Header",
 
-  "PinOut": "5V, 3.3vRX, 3.3vTX, Ground"
+  "PinOut": "5v, 3.3vRX, 3.3vTX, Ground"
 
 }

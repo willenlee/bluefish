@@ -16,17 +16,17 @@
 
   "Name": "External Enclosure {{ID}}",
 
-  "SKU": "Enclosure",
+  "SKU": "Chassis Part Number",
 
-  "Manufacturer": "Manufacturer Name",
+  "Model": "Board Product Name",
 
-  "AssetTag": "External Enclosure",
+  "SerialNumber": "Board Serial Number",
 
-  "Model": "External Enclosure",
+  "PartNumber": "Board Part Number",
 
-  "ChassisType": "StorageEnclosure",
+  "Manufacturer": "Product Manufacturer",
 
-  "IndicatorLED": "Lit",
+  "AssetTag": "Product Asset Tag",
 
   "Status": {
 

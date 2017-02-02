@@ -247,7 +247,7 @@ REDFISH_RESOURCES = {
         get = get_handler.get_bmc_serialinterfaces),    #ToDo#
     "bmc_serialinterface" : redfish_resource (
         common = (
-        "/redfish/v1/Managers/1/SerialInterface",
+        "/redfish/v1/Managers/1/SerialInterface/1",
         "BMC/SerialInterface.tpl"),
         get = get_handler.get_bmc_serialinterface),    #ToDo#
         

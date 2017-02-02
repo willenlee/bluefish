@@ -9,9 +9,14 @@
   "Description": "BMC",
   "ServiceEntryPointUUID": "92384634-2938-2342-8820-489239905423",
   "UUID": "00000000-0000-0000-0000-000000000000",
-  "Model": "AST2520",
   "DateTime": "2015-03-13T04:14:33+06:00",
   "DateTimeLocalOffset": "+06:00",
+  "SKU": "Chassis Part Number",
+  "Model": "Board Product Name",
+  "SerialNumber": "Board Serial Number",
+  "PartNumber": "Board Part Number",
+  "Manufacturer": "Product Manufacturer",
+  "AssetTag": "Product Asset Tag",
   "Status": {
     "State": "Enabled",
     "Health": "OK"
