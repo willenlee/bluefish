@@ -24,7 +24,7 @@ resources.add_bottle_filters(app)
 for resource in resources.REDFISH_RESOURCES.itervalues():
     resource.register_resource(app)
 
-bind = ('', 444)
+bind = ('', 9443)
 
 server = WSGIServer(
     bind, app, keyfile=default_cert, certfile=default_cert)
