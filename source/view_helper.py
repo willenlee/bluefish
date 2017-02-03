@@ -674,8 +674,8 @@ def get_json_default_resource (name, ordered = False):
     
     :return The JSON data for the default resource.
     """
- 
-    
+
+    values = {"TemplateDefault": True}
     resource = resources.REDFISH_RESOURCES[name]
     body = template (resource.template, values)
     return json.loads (body, object_pairs_hook = OrderedDict if ordered else dict)
@@ -707,16 +707,14 @@ class parameter_parser:
         :param value: The parameter value to parse.
         :param params: The dictionary of parsed parameters to update with the parsed value.
         """
-        
         if self.conversion:
             if self.args:
                 convert = self.conversion (value, **self.args)
             else:
-                convert = self.conversion (value)
+                convert = self.conversion (value, convert = True)
         else:
             convert = value
-        
-        params[self.name] = self.cast (convert)
+        params[self.name] = convert
         
     @staticmethod
     def validate_bool (value):

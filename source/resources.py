@@ -149,7 +149,8 @@ REDFISH_RESOURCES = {
         common = (
         "/redfish/v1/Chassis/1",
         "Chassis/Chassis.tpl"),
-        get = get_handler.get_chassis),
+        get = get_handler.get_chassis,
+        patch=patch_handler.patch_chassis),
    "chassis_temperature" : redfish_resource (
         common = (
         "/redfish/v1/Chassis/1/Thermal",

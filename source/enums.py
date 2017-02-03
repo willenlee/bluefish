@@ -82,8 +82,9 @@ class IndicatorLED ():
         Off
         Unknown
     """
-    
+
     values = {
+        "Blinking": 2,
         "Lit": 1,
         "Off": 0,
         "Unknown": -1
@@ -113,11 +114,12 @@ class IndicatorLED ():
             if (value not in IndicatorLED.values):
                 if (not convert):
                     raise ValueError ("{0} is not valid for IndicatorLED.".format (value))
-                
                 if ("ON" == value.upper ()):
                     value = "Lit"
                 elif ("OFF" == value.upper()):
                     value = "Off"
+                elif ("BLINKING" == value.upper()):
+                    value = "Blinking"
                 else:
                     value = "Unknown"
                     

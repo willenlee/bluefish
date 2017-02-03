@@ -5,11 +5,13 @@ import os
 import datetime
 import lib_utils
 import collections
+import obmc_dbuslib
 
 from ctypes import *
 from manage_network import *
 from manage_fwversion import *
 from collections import OrderedDict
+
 
 
 
@@ -82,51 +84,35 @@ def manager_session_kill(sessionid):
     return result
 
 
-def set_rack_manager_attention_led(setting):
+def set_bmc_attention_led(setting):
     result = {}
-    output = -1
-        
-    if setting != 0 and setting != 1:
-        return set_failure_dict(("Unknown setting passed to set_rack_manager_attention_led.: ", setting),completion_code.failure)
-
-    state = c_uint()
-    
     try:
-        gpio_binary = get_gpio_library ()
-            
-        output = gpio_binary.ocs_port_attentionled(setting, byref(state))
-        
-        if output != 0:
-            return set_failure_dict(("Failed to set attention led using GPIO library:", output),completion_code.failure)
+        dbusctl = obmc_dbuslib.ObmcRedfishProviders()
+        dbusctl.led_operation(str(setting), 'identify')
     
-    except Exception,e:              
+    except Exception,e:
         return set_failure_dict(('Exception:', e),completion_code.failure)
-        
+
     return set_success_dict(result)
 
-def get_rack_manager_attention_led_status():
+def get_bmc_attention_led_status():
     result = {}
-    output = -1
-
-    state = c_uint()
 
     try:
-        gpio_binary = get_gpio_library()
-            
-        output = gpio_binary.ocs_port_attentionled(2, byref(state))
-        
-        if output != 0:
-            return set_failure_dict(("Failed to get attention led state using GPIO library:", output), completion_code.failure)
+        dbusctl = obmc_dbuslib.ObmcRedfishProviders()
+        pydata = dbusctl.led_operation('state', 'identify')
 
-    except Exception,e:   
+    except Exception,e:
         return set_failure_dict(('Exception:', e),completion_code.failure)
     
-    if(state.value == 0):
-        result["Manager LED Status"] = 'OFF'
-    elif (state.value == 1):
-        result["Manager LED Status"] = 'ON'
+    if(pydata == 'Off'):
+        result["Chassis_IndicatorLED"] = 'Off'
+    elif (pydata == 'Lit'):
+        result["Chassis_IndicatorLED"] = 'Lit'
+    elif (pydata == 'Blinking'):
+        result["Chassis_IndicatorLED"] = 'Blanking'
     else:
-        result["Manager LED Status"] = 'Unknown'
+        result["Chassis_IndicatorLED"] = 'Unknown'
                 
     return set_success_dict(result)
 

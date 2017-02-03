@@ -9,7 +9,7 @@ from controls.utils import set_failure_dict, completion_code
 import controls.manage_network
 import controls.manage_user
 import controls.manage_logentry
-
+import controls.manage_fwversion
 import time
 import datetime
 
@@ -122,8 +122,14 @@ def get_managers_root ():
 # Chassis components
 #########################
 @auth_basic (authentication.validate_user)
-def get_chassis ():
-    return view_helper.return_redfish_resource ("chassis")
+def get_chassis (patch = dict ()):
+    query = [
+        (controls.manage_bmc.get_bmc_attention_led_status, {})
+    ]
+
+    result = execute_get_request_queries(query)
+    view_helper.update_and_replace_status_information(result, patch)
+    return view_helper.return_redfish_resource ("chassis", values = result)
 
 
 @auth_basic (authentication.validate_user)

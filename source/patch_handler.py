@@ -24,7 +24,6 @@ def execute_patch_request_actions (requested, action_map, tree = []):
     
     :return A result dictionary to be used to generate the response.
     """
-    
     result = {}
     if requested is not None:
         for param, value in requested.items ():
@@ -68,8 +67,6 @@ def execute_patch_request_actions (requested, action_map, tree = []):
                                 view_helper.append_invalid_property_value (result,
                                     action.split ("/"), str (error))
                                 continue
-                            
-#                             print call[0], args
                             action_data = call[0] (**args)
                             view_helper.append_response_information (result, action_data)
                         else:
@@ -78,7 +75,6 @@ def execute_patch_request_actions (requested, action_map, tree = []):
                 except Exception as error:
                     view_helper.append_response_information (
                         result, set_failure_dict (str (error), completion_code.failure))
-                
     return result
 
 def validate_patch_request_and_execute (action_map, name):
@@ -93,21 +89,17 @@ def validate_patch_request_and_execute (action_map, name):
     
     :return A result dictionary to be used to generate the response.
     """
-    
     try:
         requested = view_helper.get_json_request_data ()
         
     except Exception as error:
         view_helper.raise_status_response (400,
             view_helper.create_response_with_status (description = str (error)))
-        
     valid_set = view_helper.get_json_default_resource (name)
-    
     errors = {}
     check_for_invalid_parameters (requested, valid_set, errors)
     if errors:
         view_helper.raise_status_response (400, errors)
-    
     return execute_patch_request_actions (requested, action_map)
 
 def check_for_invalid_parameters (requested, valid_set, errors, path = "#"):
@@ -195,14 +187,22 @@ def apply_ip_address (address = None, mask = None, gateway = None, addr_type = N
         
     return result
 
-
+#########################
+# Chassis components
+#########################
+@auth_basic(authentication.validate_user)
+def patch_chassis():
+    actions = {
+        "IndicatorLED": (controls.manage_bmc.set_bmc_attention_led,
+                         parameter_parser("setting", int, enums.IndicatorLED), {})
+    }
+    result = validate_patch_request_and_execute(actions, "chassis")
+    return get_handler.get_chassis(patch=result)
 ###################
 # BMC components
 ###################
 @auth_basic (authentication.validate_user)
 def patch_bmc ():
-    pre_check_function_call (op_category_enum.set_rackmanager_config)
-    
     actions = {
         "Oem/Microsoft/HostName" : (controls.manage_bmc.set_hostname,
             parameter_parser ("hostname", str), {}),
@@ -210,7 +210,7 @@ def patch_bmc ():
     }
     
     result = validate_patch_request_and_execute (actions, "bmc")
-    return get_handler.manage_bmc (patch = result)
+    return get_handler.get_bmc (patch = result)
 
 
 @auth_basic (authentication.validate_user)
@@ -253,7 +253,6 @@ def patch_bmc_ethernet (eth):
 @auth_basic (authentication.validate_user)
 def patch_account (account):
     view_helper.verify_account_name (account)
-    pre_check_function_call (command_name_enum.set_rm_config)
     
     actions = {
         "Password" : (controls.manage_user.user_update_password, parameter_parser ("pwd", str),
