@@ -110,7 +110,7 @@ def get_bmc_attention_led_status():
     elif (pydata == 'Lit'):
         result["Chassis_IndicatorLED"] = 'Lit'
     elif (pydata == 'Blinking'):
-        result["Chassis_IndicatorLED"] = 'Blanking'
+        result["Chassis_IndicatorLED"] = 'Blinking'
     else:
         result["Chassis_IndicatorLED"] = 'Unknown'
                 
