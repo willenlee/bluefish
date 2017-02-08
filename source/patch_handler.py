@@ -191,13 +191,13 @@ def apply_ip_address (address = None, mask = None, gateway = None, addr_type = N
 # Chassis components
 #########################
 @auth_basic(authentication.validate_user)
-def patch_chassis():
+def patch_chassis(slot_id):
     actions = {
         "IndicatorLED": (controls.manage_bmc.set_bmc_attention_led,
                          parameter_parser("setting", int, enums.IndicatorLED), {})
     }
     result = validate_patch_request_and_execute(actions, "chassis")
-    return get_handler.get_chassis(patch=result)
+    return get_handler.get_chassis(slot_id, patch=result)
 ###################
 # BMC components
 ###################

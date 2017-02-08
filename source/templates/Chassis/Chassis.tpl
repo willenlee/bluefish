@@ -1,13 +1,15 @@
 <%
+    setdefault ("SLOT_ID", "#")
     if defined ("TemplateDefault"):
         setdefault ("Chassis_IndicatorLED", "")
     end
 %>
+
 {
   "@Redfish.Copyright": "Copyright 2014-2016 Distributed Management Task Force, Inc. (DMTF). All rights reserved.",
-  "@odata.context": "/redfish/v1/$metadata#Chassis.Chassis",
-  "@odata.id": "/redfish/v1/Chassis/1",
-  "@odata.type": "#Chassis.v1_0_0.Chassis",
+  "@odata.context": "/redfish/v1/$metadata#Chassis",
+  "@odata.id": "/redfish/v1/Chassis/System/{{SLOT_ID}}",
+  "@odata.type": "#Chassis.v1_3_0.Chassis",
   "Id": "1",
   "Name": "Computer System Chassis",
   "ChassisType": "RackMount",
@@ -26,20 +28,32 @@
     "Health": "OK"
   },
   "Thermal": {
-    "@odata.id": "/redfish/v1/Chassis/1/Thermal"
+    "@odata.id": "/redfish/v1/Chassis/System/{{SLOT_ID}}/Thermal"
   },
   "Power": {
-    "@odata.id": "/redfish/v1/Chassis/1/Power"
+    "@odata.id": "/redfish/v1/Chassis/System/{{SLOT_ID}}/Power"
   },
   "Links": {
-    "ManagedBy": [
+    "Contains": [
       {
-        "@odata.id": "/redfish/v1/Managers/1"
+        "@odata.id": "/redfish/v1/Chassis/System/{{SLOT_ID}}/MainBoard"
+      },
+      {
+        "@odata.id": "/redfish/v1/Chassis/System/{{SLOT_ID}}/StorageEnclosure1"
+      },
+      {
+        "@odata.id": "/redfish/v1/Chassis/System/{{SLOT_ID}}/StorageEnclosure1"
+      },
+      {
+        "@odata.id": "/redfish/v1/Chassis/System/{{SLOT_ID}}/StorageEnclosure3"
+      },
+      {
+        "@odata.id": "/redfish/v1/Chassis/System/{{SLOT_ID}}/StorageEnclosure4"
       }
     ],
-    "ManagersInChassis": [
+    "ManagedBy": [
       {
-        "@odata.id": "/redfish/v1/Managers/1"
+        "@odata.id": "/redfish/v1/Managers/System/{{SLOT_ID}}"
       }
     ],
     "Oem": {}

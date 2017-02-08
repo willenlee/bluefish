@@ -63,11 +63,42 @@ def check_action_result (result, success_code = 200, fail_code = 500):
 # BMC components
 ###################
 @auth_basic (authentication.validate_user)
-def post_bmc_clear_log ():
+def post_bmc_clear_log (slot_id):
     result = controls.manage_logentry.clear_event_log()
-    
-    return check_action_result (result)    
 
+    return check_action_result (result)
+
+def post_bmc_fw_update(slot_id):
+    result ={}
+    validation = {
+        "Action" : parameter_parser ("action", str)
+    }
+    params = validate_action_parameters(validation)
+    result = controls.manage_bmc.set_bmc_fwupdate(**params)
+    return check_action_result(result)
+
+
+
+def post_bmc_fw_update_state(slot_id):
+    result = {}
+    validation = {
+        "Action" : parameter_parser ("action", str)
+    }
+    params = validate_action_parameters(validation)
+    result = controls.manage_bmc.get_bmc_fwupdate_state(**params)
+    if result[completion_code.cc_key] == completion_code.failure:
+        return check_action_result(result)
+    return view_helper.return_redfish_resource ("bmc_fw_update_state", values = result)
+
+
+def post_bmc_warm_reset(slot_id):
+    result ={}
+    validation = {
+        "Action" : parameter_parser ("action", str)
+    }
+    params = validate_action_parameters(validation)
+    result = controls.manage_bmc.set_bmc_warm_reset(**params)
+    return check_action_result(result)
 #####################
 # Chassis components
 #####################

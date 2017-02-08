@@ -163,7 +163,7 @@ def build_extended_info_entry (code = completion_code.success, message = "", inc
         
     entry["Oem"] = OrderedDict ([
         ("Microsoft", OrderedDict ([
-            ("@odata.type", "#Ocs.v1_0_0.Status"),
+            ("@odata.type", "#Ocs.v1_0_3.Status"),
             ("CompletionCode", code)
         ]))
     ])

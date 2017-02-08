@@ -4,11 +4,13 @@
         setdefault ("groupname", "")
     end
 %>
+
 {
-   "@odata.type": "#ManagerAccount.v1_0_2.ManagerAccount",
-   "@odata.context": "/redfish/v1/$metadata#AccountService/Accounts/Members/$entity",
-   "@odata.id": "/redfish/v1/AccountService/ManagerAccount/{{Account}}",
-   "Id": "{{Account}}",
+  "@Redfish.Copyright": "Copyright 2014-2016 Distributed Management Task Force, Inc. (DMTF). All rights reserved.",
+  "@odata.context": "/redfish/v1/$metadata#ManagerAccount",
+  "@odata.id": "/redfish/v1/AccountService/Accounts/{{Account}}",
+  "@odata.type": "#ManagerAccount.v1_0_2.ManagerAccount",
+  "Id": "{{Account}}",
    "Name": "User Account",
    "Enabled": true,
    "UserName": "{{Account}}",
@@ -17,9 +19,9 @@
    %end
    %if defined ("groupname"):
        "RoleId": "{{groupname}}",
-       "Links": { 
+       "Links": {
            "Role": {
-               "@odata.id": "/redfish/v1/AccountService/Role/{{groupname}}"
+               "@odata.id": "/redfish/v1/AccountService/Roles/{{groupname}}"
            }
        }
    %end

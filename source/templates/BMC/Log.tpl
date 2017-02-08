@@ -1,25 +1,31 @@
+<%
+    setdefault ("SLOT_ID", "#")
+%>
+
+
 {
-    "@odata.type": "#LogService.v1_0_2.LogService",
-    "@odata.context": "/redfish/v1/$metadata#Managers/Members/1/LogServices/Members/$entity",
-    "@odata.id": "/redfish/v1/Managers/1/LogServices/Log",
-    "Id": "Log",
-    "Name": "System Log Service",
-    "MaxNumberOfRecords": 1000,
-    "OverWritePolicy": "WrapsWhenFull",
-    "DateTime": "{{DateTime}}",
-    "DateTimeLocalOffset": "+00:00",
-    "ServiceEnabled": true,
-    "Status": {
-        "State": "Enabled",
-        "Health": "OK"
-    },
-    "Oem": {},
-    "Actions": {
-        "#LogService.ClearLog": {
-            "target": "/redfish/v1/Managers/1/LogServices/Log/Actions/LogService.ClearLog"
-        }
-    },
-    "Entries": {
-        "@odata.id": "/redfish/v1/Managers/1/LogServices/Log/Entries"
+  "@Redfish.Copyright": "Copyright 2014-2016 Distributed Management Task Force, Inc. (DMTF). All rights reserved.",
+  "@odata.context": "/redfish/v1/$metadata#LogService",
+  "@odata.id": "/redfish/v1/Managers/System/{{SLOT_ID}}/LogServices/Log1",
+  "@odata.type": "#LogService.v1_0_2.LogService",
+  "Id": "Log1",
+  "Name": "System Log Service",
+  "MaxNumberOfRecords": 1000,
+  "OverWritePolicy": "WrapsWhenFull",
+  "DateTime": "{{DateTime}}",
+  "DateTimeLocalOffset": "+06:00",
+  "ServiceEnabled": true,
+  "Status": {
+    "State": "Enabled",
+    "Health": "OK"
+  },
+  "Oem": {},
+  "Actions": {
+    "#LogService.ClearLog": {
+      "target": "/redfish/v1/Managers/System/{{SLOT_ID}}/LogServices/Log1/Actions/LogService.Reset"
     }
+  },
+  "Entries": {
+    "@odata.id": "/redfish/v1/Managers/System/{{SLOT_ID}}/LogServices/Log1/Entries"
+  }
 }

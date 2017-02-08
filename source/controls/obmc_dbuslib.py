@@ -3,7 +3,14 @@ import json
 import sys
 import dbus
 
+BMC_UPDATE = {'Prepare':'PrepareForUpdate',
+              'Apply':'Apply',
+              'Abort':'Abort',
+              'Query':'GetUpdateProgress'
+              }
 
+BMC_RESET = {'WarmReset':'warmReset'
+            }
 
 POWER_CONTROL = {'On': 'powerOn',
                  'ForceOff': 'powerOff',
@@ -357,6 +364,39 @@ class ObmcRedfishProviders(object):
         else:
             return None
 
+    def fw_update_operation(self, op):
+        if op in BMC_UPDATE:
+            interface = '/org/openbmc/control/flash/bmc'
+            obj = self.bus.get_object('org.openbmc.control.BmcFlash',
+                                      interface)
+            intf = dbus.Interface(obj, 'org.openbmc.control.BmcFlash')
+            mthd = getattr(intf, BMC_UPDATE[op])
+            try:
+                data = mthd()
+            except Exception as e:
+                print e
+            if data is not None:
+                pydata = json.loads(json.dumps(data))
+                return pydata
+            else:
+                return None
+        else:
+            return exit(1)
+
+    def bmc_reset_operation(self, op):
+        if op in BMC_RESET:
+            interface = '/org/openbmc/control/bmc0'
+            obj = self.bus.get_object('org.openbmc.control.Bmc',
+                                      interface)
+            intf = dbus.Interface(obj, 'org.openbmc.control.Bmc')
+            mthd = getattr(intf, BMC_RESET[op])
+            try:
+                data = mthd()
+            except Exception as e:
+                print e
+            return None
+        else:
+            return exit(1)
 # Not working yet
     def get_host_settings(self):
         obj = self.bus.get_object('org.openbmc.settings.Host',

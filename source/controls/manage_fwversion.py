@@ -18,7 +18,7 @@ def doCommand():
     Read rmversions.sh output and parse the output 
     """
 
-    command = '/etc/bmcversion.sh'
+    command = '/usr/lib/redfish/controls/bmcversion.sh'
 
     output = {}
 
