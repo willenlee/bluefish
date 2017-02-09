@@ -49,8 +49,8 @@ SYSTEM_STATES = {'BASE_APPS': "Off",
 
 LED_FUNCTIONS = {'Lit': 'setOn',
                  'Off': 'setOff',
-                 'BlinkFast': 'setBlinkFast',
-                 'Blinking': 'setBlinkSlow',
+                 'Blinking': 'setBlinkFast',
+                 'BlinkFast': 'setBlinkSlow',
                  'state': 'GetLedState'}
 
 LED_TYPE = ['identify', 'power', 'heartbeat']

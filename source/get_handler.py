@@ -183,7 +183,8 @@ def get_chassis_storage_enclosure_drive (slot_id, se_id, dr_id):
 @auth_basic (authentication.validate_user)
 def get_bmc (slot_id, patch = dict ()):
     query = [
-        (controls.manage_fwversion.get_ocsfwversion, {})
+        (controls.manage_fwversion.get_ocsfwversion, {}),
+        (controls.manage_bmc.show_bmc_time, {"edm": True})
     ]
 
     result = execute_get_request_queries(query)
@@ -192,8 +193,14 @@ def get_bmc (slot_id, patch = dict ()):
 
 
 @auth_basic (authentication.validate_user)
-def get_bmc_networkprotocol (slot_id):
-    return view_helper.return_redfish_resource ("bmc_networkprotocol")
+def get_bmc_networkprotocol (slot_id, patch = dict ()):
+
+    query = [
+        (controls.manage_bmc.show_bmc_hostname, {})
+    ]
+    result = execute_get_request_queries(query)
+    view_helper.update_and_replace_status_information(result, patch)
+    return view_helper.return_redfish_resource ("bmc_networkprotocol", values = result)
     
 @auth_basic (authentication.validate_user)
 def get_bmc_ethernets (slot_id):
@@ -202,7 +209,6 @@ def get_bmc_ethernets (slot_id):
     query = [
         (controls.manage_network.display_cli_interfaces, {})
     ]
-    
     result = execute_get_request_queries (query)
         
     return view_helper.return_redfish_resource ("bmc_ethernets", values = result)

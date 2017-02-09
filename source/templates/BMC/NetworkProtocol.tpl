@@ -1,5 +1,6 @@
 <%
     setdefault ("SLOT_ID", "#")
+    setdefault ("Hostname", "j2010")
 %>
 
 {
@@ -14,7 +15,9 @@
     "State": "Enabled",
     "Health": "OK"
   },
-  "HostName": "StorageMgr",
+  %if defined ("Hostname"):
+        "HostName": "{{Hostname}}",
+  %end
   "FQDN": "none ",
   "HTTP": {
     "ProtocolEnabled": true,

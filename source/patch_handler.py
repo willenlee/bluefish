@@ -2,79 +2,80 @@ import authentication
 import view_helper
 import get_handler
 import enums
+import re
 from bottle import HTTPError, auth_basic
-from authentication import pre_check_function_call
-from pre_settings import command_name_enum
 from controls.utils import set_failure_dict, completion_code
 from view_helper import parameter_parser
 from netaddr import IPAddress
+from controls.sys_works import ethernet_actions_results
 import controls.manage_bmc
 import controls.manage_network
 import controls.manage_user
 
-def execute_patch_request_actions (requested, action_map, tree = []):
+
+def execute_patch_request_actions(requested, action_map, tree=[]):
     """
     Handler for all patch requests to change system parameters based on received information.
-    
+
     :param requested: A dictionary that contains the set of system parameters to change.
     :param action_map: A mapping of the function to call for each parameter that can be set.
     Each mapping contains a tuple that has a function pointer, parameter parser, and additional
     arguments that should be passed to the function.
     :param tree: The ancestry of the current set of request properties.
-    
+
     :return A result dictionary to be used to generate the response.
     """
     result = {}
     if requested is not None:
-        for param, value in requested.items ():
+        for param, value in requested.items():
             if ("@" not in param):
                 try:
-                    if (hasattr (value, "keys")):
-                        parents = list (tree)
-                        parents.append (param)
-                        
-                        action_data = execute_patch_request_actions (value, action_map,
-                            tree = parents)
-                        view_helper.append_response_information (result, action_data)
-                    elif (isinstance (value, list)):
-                        for i, entry in enumerate (value):
-                            parents = list (tree)
-                            parents.append (param)
-                            parents.append ("[{0}]".format (i))
-                            
-                            action_data = execute_patch_request_actions (entry, action_map,
-                                tree = parents)
-                            view_helper.append_response_information (result, action_data)
+                    if (hasattr(value, "keys")):
+                        parents = list(tree)
+                        parents.append(param)
+
+                        action_data = execute_patch_request_actions(value, action_map,
+                                                                    tree=parents)
+                        view_helper.append_response_information(result, action_data)
+                    elif (isinstance(value, list)):
+                        for i, entry in enumerate(value):
+                            parents = list(tree)
+                            parents.append(param)
+                            parents.append("[{0}]".format(i))
+
+                            action_data = execute_patch_request_actions(entry, action_map,
+                                                                        tree=parents)
+                            view_helper.append_response_information(result, action_data)
                             i = i + 1
                     else:
                         action = ""
-                        if len (tree):
-                            action = "/".join (tree) + "/"
+                        if len(tree):
+                            action = "/".join(tree) + "/"
                         action = action + param
-                        
+
                         if (action in action_map):
                             call = action_map[action]
-                            args = call[2].copy ()
+                            args = call[2].copy()
                             try:
-                                call[1].parse_parameter (value, args)
-                            
+                                call[1].parse_parameter(value, args)
+
                             except TypeError as error:
-                                view_helper.append_invalid_property_type (result,
-                                    action.split ("/"))
+                                view_helper.append_invalid_property_type(result,
+                                                                         action.split("/"))
                                 continue
-                        
+
                             except Exception as error:
-                                view_helper.append_invalid_property_value (result,
-                                    action.split ("/"), str (error))
+                                view_helper.append_invalid_property_value(result,
+                                                                          action.split("/"), str(error))
                                 continue
-                            action_data = call[0] (**args)
-                            view_helper.append_response_information (result, action_data)
+                            action_data = call[0](**args)
+                            view_helper.append_response_information(result, action_data)
                         else:
-                            view_helper.append_read_only_property (result, action.split ("/"))
-                    
+                            view_helper.append_read_only_property(result, action.split("/"))
+
                 except Exception as error:
-                    view_helper.append_response_information (
-                        result, set_failure_dict (str (error), completion_code.failure))
+                    view_helper.append_response_information(
+                        result, set_failure_dict(str(error), completion_code.failure))
     return result
 
 def validate_patch_request_and_execute (action_map, name):
@@ -187,6 +188,20 @@ def apply_ip_address (address = None, mask = None, gateway = None, addr_type = N
         
     return result
 
+
+def validate_datetime(time):
+    """
+    Validate that the DateTime value is formatted properly.
+
+    :param time: The configuration to validate.
+
+    :return The validated configuration.
+    """
+    if (not re.match('(\d{4})[-](\d{2})[-](\d{2})T(\d{2})[:](\d{2})[:](\d{2})Z$', time)):
+        raise ValueError("{0} is not a DateTime value.".format(time))
+    return time
+
+
 #########################
 # Chassis components
 #########################
@@ -202,24 +217,21 @@ def patch_chassis(slot_id):
 # BMC components
 ###################
 @auth_basic (authentication.validate_user)
-def patch_bmc ():
+def patch_bmc (slot_id):
     actions = {
-        "Oem/Microsoft/HostName" : (controls.manage_bmc.set_hostname,
-            parameter_parser ("hostname", str), {}),
-
+        "DateTime": (controls.manage_bmc.set_bmc_time,
+            parameter_parser("datetime", str, validate_datetime), {})
     }
     
     result = validate_patch_request_and_execute (actions, "bmc")
-    return get_handler.get_bmc (patch = result)
+    return get_handler.get_bmc (slot_id, patch = result)
 
 
 @auth_basic (authentication.validate_user)
-def patch_bmc_ethernet (eth):
+def patch_bmc_ethernet (slot_id, eth):
     if (eth == "eth1"):
         raise HTTPError (status = 405)
-    
-    pre_check_function_call (op_category_enum.set_rackmanager_config)
-    
+
     requested = view_helper.get_json_request_data ()
     if ("IPv4Addresses" in requested):
         address = requested["IPv4Addresses"]

@@ -26,7 +26,7 @@
                  end %>
 
                 % if ks == "Id":
-                    "@odata.id": "/redfish/v1/Managers/System/{{SLOT_ID}}/LogServices/Log1/Entry/{{vs}}",
+                    "@odata.id": "/redfish/v1/Managers/System/{{SLOT_ID}}/LogServices/Log1/Entries/{{vs}}",
                     "@odata.type": "#LogEntry.1.0.2.LogEntry",
                     "Id": "{{vs}}",
                     "Name": "Log Entry {{vs}}"{{tag}}

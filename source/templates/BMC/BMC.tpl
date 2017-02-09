@@ -1,8 +1,8 @@
 <%
     setdefault ("SLOT_ID", "#")
-    setdefault ("Package", "NA")
+    setdefault ("Package", "vx.xx.xx")
+    setdefault ("DateTime", "yyyy-MM-ddTHH:mm:ss+Z")
 %>
-
 {
   "@Redfish.Copyright": "Copyright 2014-2016 Distributed Management Task Force, Inc. (DMTF). All rights reserved.",
   "@odata.context": "/redfish/v1/$metadata#Manager",
@@ -15,7 +15,9 @@
   "ServiceEntryPointUUID": "92384634-2938-2342-8820-489239905423",
   "UUID": "00000000-0000-0000-0000-000000000000",
   "Model": "AST2520",
-  "DateTime": "2015-03-13T04:14:33+06:00",
+  %if defined ("DateTime"):
+        "DateTime": "{{DateTime}}",
+  %end
   "DateTimeLocalOffset": "+00:00",
   "Status": {
     "State": "Enabled",
