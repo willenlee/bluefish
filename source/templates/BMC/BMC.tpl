@@ -16,7 +16,7 @@
   "UUID": "00000000-0000-0000-0000-000000000000",
   "Model": "AST2520",
   "DateTime": "2015-03-13T04:14:33+06:00",
-  "DateTimeLocalOffset": "+06:00",
+  "DateTimeLocalOffset": "+00:00",
   "Status": {
     "State": "Enabled",
     "Health": "OK"
