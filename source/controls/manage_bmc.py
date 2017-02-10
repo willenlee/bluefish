@@ -123,7 +123,7 @@ def get_bmc_time():
         return set_success_dict(result)
 
     except Exception, e:
-        return set_failure_dict("get_rack_manager_time() Exception: {0}".format(e))
+        return set_failure_dict("get_bmc_time() Exception: {0}".format(e))
 
 
 def show_bmc_time(edm=False):
