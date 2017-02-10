@@ -711,7 +711,10 @@ class parameter_parser:
             if self.args:
                 convert = self.conversion (value, **self.args)
             else:
-                convert = self.conversion (value, convert = True)
+                try:
+                    convert = self.conversion (value, convert = True)
+                except Exception as error:
+                    convert = self.conversion(value)
         else:
             convert = value
         params[self.name] = convert
