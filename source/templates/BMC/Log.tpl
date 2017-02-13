@@ -13,7 +13,7 @@
   "MaxNumberOfRecords": 1000,
   "OverWritePolicy": "WrapsWhenFull",
   "DateTime": "{{DateTime}}",
-  "DateTimeLocalOffset": "+06:00",
+  "DateTimeLocalOffset": "+00:00",
   "ServiceEnabled": true,
   "Status": {
     "State": "Enabled",
