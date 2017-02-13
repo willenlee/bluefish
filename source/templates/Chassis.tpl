@@ -1,24 +1,33 @@
+<%
+    setdefault ("SLOT_ID", "#")
+%>
+
 {
-    "@odata.type": "#ChassisCollection.ChassisCollection",
-    "@odata.context": "/redfish/v1/$metadata#Chassis",
-    "@odata.id": "/redfish/v1/Chassis",
-    "Name": "Chassis Collection",
-    "Members@odata.count": 5,
-    "Members": [
-        {
-            "@odata.id": "/redfish/v1/Chassis/1"
-        },
-        {
-            "@odata.id": "/redfish/v1/Chassis/StorageEnclosure1"
-        },
-        {
-            "@odata.id": "/redfish/v1/Chassis/StorageEnclosure2"
-        },
-        {
-            "@odata.id": "/redfish/v1/Chassis/StorageEnclosure3"
-        },
-        {
-            "@odata.id": "/redfish/v1/Chassis/StorageEnclosure4"
-        }
-    ]
+  "@Redfish.Copyright": "Copyright 2014-2016 Distributed Management Task Force, Inc. (DMTF). All rights reserved.",
+
+"@odata.context": "/redfish/v1/$metadata#ChassisCollection",
+  "@odata.id": "/redfish/v1/Chassis",
+  "@odata.type": "#ChassisCollection.ChassisCollection",
+  "Name": "Chassis Collection",
+  "Members@odata.count": 6,
+  "Members": [
+    {
+      "@odata.id": "/redfish/v1/Chassis/System/{{SLOT_ID}}"
+    },
+    {
+      "@odata.id": "/redfish/v1/Chassis/System/{{SLOT_ID}}/MainBoard"
+    },
+    {
+      "@odata.id": "/redfish/v1/Chassis/System/{{SLOT_ID}}/StorageEnclosure1"
+    },
+    {
+      "@odata.id": "/redfish/v1/Chassis/System/{{SLOT_ID}}/StorageEnclosure2"
+    },
+    {
+      "@odata.id": "/redfish/v1/Chassis/System/{{SLOT_ID}}/StorageEnclosure3"
+    },
+    {
+      "@odata.id": "/redfish/v1/Chassis/System/{{SLOT_ID}}/StorageEnclosure4"
+    }
+  ]
 }

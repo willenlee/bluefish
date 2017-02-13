@@ -15,10 +15,10 @@ def get_ocsfwversion():
 
 def doCommand():
     """
-    Read rmversions.sh output and parse the output 
+    Read bmcversion.sh output and parse the output 
     """
 
-    command = '/etc/bmcversion.sh'
+    command = '/usr/lib/redfish/controls/bmcversion.sh'
 
     output = {}
 

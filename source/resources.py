@@ -147,47 +147,61 @@ REDFISH_RESOURCES = {
     #########################      
     "chassis" : redfish_resource (
         common = (
-        "/redfish/v1/Chassis/1",
+        "/redfish/v1/Chassis/System/<slot_id>",
         "Chassis/Chassis.tpl"),
         get = get_handler.get_chassis,
         patch=patch_handler.patch_chassis),
-   "chassis_temperature" : redfish_resource (
+   "chassis_thermal" : redfish_resource (
         common = (
-        "/redfish/v1/Chassis/1/Thermal",
-        "Chassis/Temperature.tpl"),
-        get = get_handler.get_chassis_temperature),  #ToDo#
-   "chassis_redundancy" : redfish_resource (
+        "/redfish/v1/Chassis/System/<slot_id>/Thermal",
+        "Chassis/Thermal.tpl"),
+        get = get_handler.get_chassis_thermal),
+    "chassis_thermal_redundancy" : redfish_resource (
         common = (
-        "/redfish/v1/Chassis/1/Thermal#/Redundancy/0",
-        "Chassis/Redundancy.tpl"),
-        get = get_handler.get_chassis_redundancy),  #ToDo#
+        "/redfish/v1/Chassis/System/<slot_id>/Thermal<sensor_id>/Redundancy/0",
+        "Chassis/ThermalRedundancy.tpl"),
+        get = get_handler.get_chassis_thermal_redundancy),
     "chassis_power" : redfish_resource (
         common = (
-        "/redfish/v1/Chassis/1/Power",
+        "/redfish/v1/Chassis/System/<slot_id>/Power",
         "Chassis/Power.tpl"),
-        get = get_handler.get_chassis_power),  #ToDo#
+        get = get_handler.get_chassis_power),
     "chassis_power_redundancy" : redfish_resource (
         common = (
-        "/redfish/v1/Chassis/1/Power#/Redundancy/0",
+        "/redfish/v1/Chassis/System/<slot_id>/Power<psu_id>/Redundancy/0",
         "Chassis/PowerRedundancy.tpl"),
-        get = get_handler.get_chassis_power_redundancy),  #ToDo#   
-    "chassis_enc1" : redfish_resource (
+        get = get_handler.get_chassis_power_redundancy),
+    "chassis_mainboard" : redfish_resource (
         common = (
-        "/redfish/v1/Chassis/Enc1",
-        "Chassis/Enc1.tpl"),
-        get = get_handler.get_chassis_enc1),  #ToDo#   
+        "/redfish/v1/Chassis/System/<slot_id>/MainBoard",
+        "Chassis/MainBoard.tpl"),
+        get = get_handler.get_chassis_mainboard),
     "chassis_storage_enclosure" : redfish_resource (
         common = (
-        "/redfish/v1/Chassis/StorageEnclosure<se_id>",
+        "/redfish/v1/Chassis/System/<slot_id>/StorageEnclosure<se_id>",
         "Chassis/StorageEnclosure.tpl"),
-        get = get_handler.get_chassis_storage_enclosure),  #ToDo# 
-        
-    "chassis_storage_enclosure_disk" : redfish_resource (
+        get = get_handler.get_chassis_storage_enclosure),
+    "chassis_storage_enclosure_storage" : redfish_resource (
         common = (
-        "/redfish/v1/Chassis/StorageEnclosure<se_id>/Drives/Disk.Bay<disk_id>",
-        "Chassis/Disk.tpl"),
-        get = get_handler.get_chassis_storage_enclosure_disk,  #ToDo#  
-        post = post_handler.post_chassis_storage_enclosure_disk), #ToDo#  
+        "/redfish/v1/Chassis/System/<slot_id>/StorageEnclosure<se_id>/Storage",
+        "Chassis/SEStorage.tpl"),
+        get = get_handler.get_chassis_storage_enclosure_storage),
+    "chassis_storage_enclosure_drive": redfish_resource(
+        common=(
+            "/redfish/v1/Chassis/System/<slot_id>/StorageEnclosure<se_id>/Drives/Drive<dr_id>",
+            "Chassis/SEDrive.tpl"),
+        get=get_handler.get_chassis_storage_enclosure_drive),
+    "chassis_storage_enclosure_power" : redfish_resource (
+        common = (
+        "/redfish/v1/Chassis/System/<slot_id>/StorageEnclosure<se_id>/Power",
+        "Chassis/SEPower.tpl"),
+        get = get_handler.get_chassis_storage_enclosure_power),
+    "chassis_storage_enclosure_thermal" : redfish_resource (
+        common = (
+        "/redfish/v1/Chassis/System/<slot_id>/StorageEnclosure<se_id>/Thermal",
+        "Chassis/SEThermal.tpl"),
+        get = get_handler.get_chassis_storage_enclosure_thermal),
+
 
     
     #########################
@@ -195,62 +209,87 @@ REDFISH_RESOURCES = {
     #########################   
     "bmc" : redfish_resource (
         common = (
-        "/redfish/v1/Managers/1",
+        "/redfish/v1/Managers/System/<slot_id>",
         "BMC/BMC.tpl"),
-        get = get_handler.get_bmc,  #ToDo#
-        patch = patch_handler.patch_bmc),  #ToDo#
+        get = get_handler.get_bmc,
+        patch = patch_handler.patch_bmc),
     "bmc_networkprotocol" : redfish_resource (
         common = (
-        "/redfish/v1/Managers/1/NetworkProtocol",
+        "/redfish/v1/Managers/System/<slot_id>/NetworkProtocol",
         "BMC/NetworkProtocol.tpl"),
-        get = get_handler.get_bmc_networkprotocol),   #ToDo#
+        get = get_handler.get_bmc_networkprotocol),
     "bmc_ethernets" : redfish_resource (
         common = (
-        "/redfish/v1/Managers/1/EthernetInterfaces",
+        "/redfish/v1/Managers/System/<slot_id>/EthernetInterfaces",
         "BMC/EthernetInterfaces.tpl"),
         get = get_handler.get_bmc_ethernets),
     "bmc_ethernet" : redfish_resource (
         common = (
-        "/redfish/v1/Managers/1/EthernetInterface/<eth:re:eth[0|1]>",
+        "/redfish/v1/Managers/System/<slot_id>/EthernetInterface/<eth:re:eth[0|1]>",
         "BMC/EthernetInterface.tpl"),
         get = get_handler.get_bmc_ethernet,
         patch = patch_handler.patch_bmc_ethernet),
     "bmc_log_service" : redfish_resource (
         common = (
-        "/redfish/v1/Managers/1/LogServices",
+        "/redfish/v1/Managers/System/<slot_id>/LogServices",
         "BMC/LogServices.tpl"),
         get = get_handler.get_bmc_log_services),
     "bmc_log" : redfish_resource (
         common = (
-        "/redfish/v1/Managers/1/LogServices/Log",
+        "/redfish/v1/Managers/System/<slot_id>/LogServices/Log1",
         "BMC/Log.tpl"),
         get = get_handler.get_bmc_log),
     "bmc_clear_log" : redfish_resource (
         common = (
-        "/redfish/v1/Managers/1/LogServices/Log/Actions/LogService.ClearLog",
+        "/redfish/v1/Managers/System/<slot_id>/LogServices/Log/Actions/LogService.Reset",
         "GeneralError.tpl"),
         post = post_handler.post_bmc_clear_log),
         
     "bmc_log_entries" : redfish_resource (
         common = (
-        "/redfish/v1/Managers/1/LogServices/Log/Entries",
+        "/redfish/v1/Managers/System/<slot_id>/LogServices/Log1/Entries",
         "BMC/LogEntries.tpl"),
         get = get_handler.get_bmc_log_entries),
     "bmc_log_entry" : redfish_resource (
         common = (
-        "/redfish/v1/Managers/1/LogServices/Log/Entry/<entry>",
+        "/redfish/v1/Managers/System/<slot_id>/LogServices/Log1/Entries/<entry>",
         "BMC/LogEntry.tpl"),
         get = get_handler.get_bmc_log_entry),    
     "bmc_serialinterfaces" : redfish_resource (
         common = (
-        "/redfish/v1/Managers/1/SerialInterfaces",
+        "/redfish/v1/Managers/System/<slot_id>/SerialInterfaces",
         "BMC/SerialInterfaces.tpl"),
-        get = get_handler.get_bmc_serialinterfaces),    #ToDo#
+        get = get_handler.get_bmc_serialinterfaces),
     "bmc_serialinterface" : redfish_resource (
         common = (
-        "/redfish/v1/Managers/1/SerialInterface/1",
+        "/redfish/v1/Managers/System/<slot_id>/SerialInterface/1",
         "BMC/SerialInterface.tpl"),
-        get = get_handler.get_bmc_serialinterface),    #ToDo#
+        get = get_handler.get_bmc_serialinterface),
+    "bmc_fw_update" : redfish_resource (
+        common = (
+            "/redfish/v1/Managers/System/<slot_id>/Actions/Manager.FirmwareUpdate",
+            ""),
+        post = post_handler.post_bmc_fw_update),
+    "bmc_fw_update_state" : redfish_resource (
+        common = (
+            "/redfish/v1/Managers/System/<slot_id>/Actions/Manager.FirmwareUpdateState",
+            "BMC/FWUpdateState.tpl"),
+        post = post_handler.post_bmc_fw_update_state),
+    "bmc_warm_reset" : redfish_resource (
+        common = (
+            "/redfish/v1/Managers/System/<slot_id>/Actions/Manager.Reset",
+            ""),
+        post = post_handler.post_bmc_warm_reset),
+#    "bmc_master_write_read" : redfish_resource (
+#        common = (
+#            "/redfish/v1/Managers/System/<slot_id>/Actions/Manager.MasterWriteRead",
+#            ""),
+#        post = post_handler.post_bmc_master_write_read),
+#    "bmc_master_phase_write_read" : redfish_resource (
+#        common = (
+#            "/redfish/v1/Managers/System/<slot_id>/Actions/Manager.MasterPhaseWriteRead",
+#            ""),
+#        post = post_handler.post_bmc_master_phase_write_read),
         
 
  

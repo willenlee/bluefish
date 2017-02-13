@@ -163,7 +163,7 @@ def build_extended_info_entry (code = completion_code.success, message = "", inc
         
     entry["Oem"] = OrderedDict ([
         ("Microsoft", OrderedDict ([
-            ("@odata.type", "#Ocs.v1_0_0.Status"),
+            ("@odata.type", "#Ocs.v1_0_3.Status"),
             ("CompletionCode", code)
         ]))
     ])
@@ -711,7 +711,10 @@ class parameter_parser:
             if self.args:
                 convert = self.conversion (value, **self.args)
             else:
-                convert = self.conversion (value, convert = True)
+                try:
+                    convert = self.conversion (value, convert = True)
+                except Exception as error:
+                    convert = self.conversion(value)
         else:
             convert = value
         params[self.name] = convert

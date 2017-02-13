@@ -1,18 +1,20 @@
 {
-    "@odata.type": "#RoleCollection.RoleCollection",
-    "@odata.context": "/redfish/v1/$metadata#AccountService/Members/Roles/$entity",
-    "@odata.id": "/redfish/v1/AccountService/Roles",
-    "Name": "Roles Collection",
-    "Members@odata.count": 3,
-    "Members": [
-        {
-            "@odata.id": "/redfish/v1/AccountService/Role/admin"
-        },
-        {
-            "@odata.id": "/redfish/v1/AccountService/Role/operator"
-        },
-        {
-            "@odata.id": "/redfish/v1/AccountService/Role/user"
-        }
-    ]
+  "@Redfish.Copyright": "Copyright 2014-2016 Distributed Management Task Force, Inc. (DMTF). All rights reserved.",
+  "@odata.context": "/redfish/v1/$metadata#RoleCollection",
+  "@odata.type": "#RoleCollection.RoleCollection",
+  "@odata.id": "/redfish/v1/AccountService/Roles",
+  "Name": "Roles Collection",
+  "Members@odata.count": 4,
+  "Members": [
+    {
+      "@odata.id": "/redfish/v1/AccountService/Roles/Admin"
+    },
+    {
+      "@odata.id": "/redfish/v1/AccountService/Roles/Operator"
+    },
+    {
+      "@odata.id": "/redfish/v1/AccountService/Roles/ReadOnlyUser"
+    }
+
+  ]
 }

@@ -122,7 +122,7 @@ def get_managers_root ():
 # Chassis components
 #########################
 @auth_basic (authentication.validate_user)
-def get_chassis (patch = dict ()):
+def get_chassis (slot_id, patch = dict ()):
     query = [
         (controls.manage_bmc.get_bmc_attention_led_status, {})
     ]
@@ -133,43 +133,44 @@ def get_chassis (patch = dict ()):
 
 
 @auth_basic (authentication.validate_user)
-def get_chassis_temperature ():
-    return view_helper.return_redfish_resource ("chassis_temperature")
+def get_chassis_thermal (slot_id):
+    return view_helper.return_redfish_resource ("chassis_thermal")
 
-
-
-@auth_basic (authentication.validate_user)
-def get_chassis_redundancy ():
-    return view_helper.return_redfish_resource ("chassis_redundancy")
-
-
+def get_chassis_thermal_redundancy (slot_id, sensor_id):
+    return view_helper.return_redfish_resource ("chassis_thermal_redundancy")
 
 @auth_basic (authentication.validate_user)
-def get_chassis_power ():
+def get_chassis_power (slot_id):
     return view_helper.return_redfish_resource ("chassis_power")
 
-
 @auth_basic (authentication.validate_user)
-def get_chassis_power_redundancy ():
+def get_chassis_power_redundancy (slot_id, psu_id):
     return view_helper.return_redfish_resource ("chassis_power_redundancy")
 
-
-
+@auth_basic (authentication.validate_user)
+def get_chassis_mainboard (slot_id):
+    return view_helper.return_redfish_resource ("chassis_mainboard")
 
 @auth_basic (authentication.validate_user)
-def get_chassis_enc1 ():
-    return view_helper.return_redfish_resource ("chassis_enc1")
-
-
-@auth_basic (authentication.validate_user)
-def get_chassis_storage_enclosure (se_id):
+def get_chassis_storage_enclosure (slot_id, se_id):
     return view_helper.return_redfish_resource ("chassis_storage_enclosure")
 
-
+@auth_basic (authentication.validate_user)
+def get_chassis_storage_enclosure_storage (slot_id, se_id):
+    return view_helper.return_redfish_resource ("chassis_storage_enclosure_storage")
 
 @auth_basic (authentication.validate_user)
-def get_chassis_storage_enclosure_disk (se_id, disk_id):
-    return view_helper.return_redfish_resource ("chassis_storage_enclosure_disk")
+def get_chassis_storage_enclosure_power (slot_id, se_id):
+    return view_helper.return_redfish_resource ("chassis_storage_enclosure_power")
+
+@auth_basic (authentication.validate_user)
+def get_chassis_storage_enclosure_thermal (slot_id, se_id):
+    return view_helper.return_redfish_resource ("chassis_storage_enclosure_thermal")
+
+@auth_basic (authentication.validate_user)
+def get_chassis_storage_enclosure_drive (slot_id, se_id, dr_id):
+    return view_helper.return_redfish_resource ("chassis_storage_enclosure_drive")
+
 
 
 
@@ -180,9 +181,10 @@ def get_chassis_storage_enclosure_disk (se_id, disk_id):
 # BMC components
 #########################
 @auth_basic (authentication.validate_user)
-def get_bmc (patch = dict ()):
+def get_bmc (slot_id, patch = dict ()):
     query = [
-        (controls.manage_fwversion.get_ocsfwversion, {})
+        (controls.manage_fwversion.get_ocsfwversion, {}),
+        (controls.manage_bmc.show_bmc_time, {"edm": True})
     ]
 
     result = execute_get_request_queries(query)
@@ -191,23 +193,28 @@ def get_bmc (patch = dict ()):
 
 
 @auth_basic (authentication.validate_user)
-def get_bmc_networkprotocol ():
-    return view_helper.return_redfish_resource ("bmc_networkprotocol")
+def get_bmc_networkprotocol (slot_id, patch = dict ()):
+
+    query = [
+        (controls.manage_bmc.show_bmc_hostname, {})
+    ]
+    result = execute_get_request_queries(query)
+    view_helper.update_and_replace_status_information(result, patch)
+    return view_helper.return_redfish_resource ("bmc_networkprotocol", values = result)
     
 @auth_basic (authentication.validate_user)
-def get_bmc_ethernets ():
+def get_bmc_ethernets (slot_id):
 #    pre_check_function_call (op_category_enum.get_rackmanager_state)
     
     query = [
         (controls.manage_network.display_cli_interfaces, {})
     ]
-    
     result = execute_get_request_queries (query)
         
     return view_helper.return_redfish_resource ("bmc_ethernets", values = result)
 
 @auth_basic (authentication.validate_user)
-def get_bmc_ethernet (eth, patch = dict ()):
+def get_bmc_ethernet (slot_id, eth, patch = dict ()):
 #    if (not patch):
 #        pre_check_function_call (op_category_enum.get_rackmanager_state)
     
@@ -220,8 +227,6 @@ def get_bmc_ethernet (eth, patch = dict ()):
     ]
     
     result = execute_get_request_queries (query)
-    print "result"
-    print result
     if ("InterfaceStatus" in result):
         result["InterfaceStatus"] = str (enums.State (
             str(result["InterfaceStatus"]), convert = True))
@@ -233,18 +238,18 @@ def get_bmc_ethernet (eth, patch = dict ()):
     return view_helper.return_redfish_resource ("bmc_ethernet", values = result)
 
 @auth_basic (authentication.validate_user)
-def get_bmc_log_services ():
+def get_bmc_log_services (slot_id):
     return view_helper.return_redfish_resource ("bmc_log_service")
 
 @auth_basic (authentication.validate_user)
-def get_bmc_log ():
+def get_bmc_log (slot_id):
     result = {}
     result["DateTime"] = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
     
     return view_helper.return_redfish_resource ("bmc_log", values = result)  
 
 @auth_basic (authentication.validate_user)
-def get_bmc_log_entries ():
+def get_bmc_log_entries (slot_id):
     query = [
         (controls.manage_logentry.get_event_log_all, {})
     ]
@@ -254,7 +259,7 @@ def get_bmc_log_entries ():
     return view_helper.return_redfish_resource ("bmc_log_entries", values = result)
     
 @auth_basic (authentication.validate_user)
-def get_bmc_log_entry (entry):
+def get_bmc_log_entry (slot_id, entry):
     query = [
         (controls.manage_logentry.get_event_log, {"log_id": entry})
     ]
@@ -267,11 +272,11 @@ def get_bmc_log_entry (entry):
     return view_helper.return_redfish_resource ("bmc_log_entry", values = result)
     
 @auth_basic (authentication.validate_user)
-def get_bmc_serialinterfaces ():
+def get_bmc_serialinterfaces (slot_id):
     return view_helper.return_redfish_resource ("bmc_serialinterfaces")
 
 @auth_basic (authentication.validate_user)
-def get_bmc_serialinterface ():
+def get_bmc_serialinterface (slot_id):
     return view_helper.return_redfish_resource ("bmc_serialinterface")
 
 
