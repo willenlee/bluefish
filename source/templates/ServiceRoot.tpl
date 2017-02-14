@@ -8,10 +8,10 @@
   "RedfishVersion": "1.0.5",
   "UUID": "92384634-2938-2342-8820-489239905423",
   "Chassis": {
-    "@odata.id": "/redfish/v1/Chassis/System/#"
+    "@odata.id": "/redfish/v1/Chassis"
   },
   "Managers": {
-    "@odata.id": "/redfish/v1/Managers/System/#"
+    "@odata.id": "/redfish/v1/Managers"
   },
   "AccountService": {
     "@odata.id": "/redfish/v1/AccountService"

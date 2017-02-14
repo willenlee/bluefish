@@ -6,6 +6,18 @@ from ctypes import c_int, byref, c_char_p
 from bottle import request, HTTPError
 from controls.manage_user import group_id_from_usr_name
 from controls.lib_utils import get_precheck_library, get_authentication_library
+from controls.obmc_dbuslib import ObmcRedfishProviders
+from controls.manage_fwversion import *
+
+dbusctl = ObmcRedfishProviders()
+CHASSIS_SLOT_ID =  dbusctl.get_slot_id(str('SlotId'))
+
+def pre_check_slot_id (slot_id):
+    if str(CHASSIS_SLOT_ID) == str(slot_id):
+        return
+    else:
+        raise HTTPError(status=403, body="System is not present.")
+
 
 
     
