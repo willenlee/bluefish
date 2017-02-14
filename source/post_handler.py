@@ -6,6 +6,7 @@ from controls.utils import completion_code
 from view_helper import parameter_parser
 import controls.manage_user
 import controls.manage_logentry
+from authentication import pre_check_slot_id
 
 def validate_action_parameters (validation):
     """
@@ -64,11 +65,13 @@ def check_action_result (result, success_code = 200, fail_code = 500):
 ###################
 @auth_basic (authentication.validate_user)
 def post_bmc_clear_log (slot_id):
+    pre_check_slot_id(slot_id)
     result = controls.manage_logentry.clear_event_log()
 
     return check_action_result (result)
 
 def post_bmc_fw_update(slot_id):
+    pre_check_slot_id(slot_id)
     result ={}
     validation = {
         "Action" : parameter_parser ("action", str)
@@ -80,6 +83,7 @@ def post_bmc_fw_update(slot_id):
 
 
 def post_bmc_fw_update_state(slot_id):
+    pre_check_slot_id(slot_id)
     result = {}
     validation = {
         "Action" : parameter_parser ("action", str)
@@ -92,6 +96,7 @@ def post_bmc_fw_update_state(slot_id):
 
 
 def post_bmc_warm_reset(slot_id):
+    pre_check_slot_id(slot_id)
     result ={}
     validation = {
         "Action" : parameter_parser ("action", str)
@@ -104,9 +109,8 @@ def post_bmc_warm_reset(slot_id):
 #####################
 
 @auth_basic (authentication.validate_user)
-def post_chassis_storage_enclosure_disk (se_id, disk_id):
-    pre_check_function_call (op_category_enum.set_rackmanager_state)
-    
+def post_chassis_storage_enclosure_disk (slot_id, se_id, disk_id):
+    pre_check_slot_id(slot_id)
     result = True
     return check_action_result (result)
 

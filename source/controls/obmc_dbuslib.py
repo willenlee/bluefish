@@ -3,6 +3,10 @@ import json
 import sys
 import dbus
 
+SLOT_ID =  {'SlotId':'GetJ2010RackSlotID'
+              }
+
+
 BMC_UPDATE = {'Prepare':'PrepareForUpdate',
               'Apply':'Apply',
               'Abort':'Abort',
@@ -346,7 +350,7 @@ class ObmcRedfishProviders(object):
             try:
                 data = mthd()
             except Exception as e:
-                print e
+                raise
             if data is not None:
                 pydata = json.loads(json.dumps(data))
                 if (isinstance(pydata, list)):
@@ -381,7 +385,7 @@ class ObmcRedfishProviders(object):
             else:
                 return None
         else:
-            return exit(1)
+            exit(1)
 
     def bmc_reset_operation(self, op):
         if op in BMC_RESET:
@@ -396,7 +400,21 @@ class ObmcRedfishProviders(object):
                 print e
             return None
         else:
-            return exit(1)
+            exit(1)
+
+    def get_slot_id(self, op):
+        if op in SLOT_ID.keys():
+            method_name = SLOT_ID[op]
+            obj = self.bus.get_object('org.openbmc.control.Chassis',
+                                      '/org/openbmc/control/chassis0')
+            intf = dbus.Interface(obj, 'org.openbmc.control.Chassis')
+            mthd = obj.get_dbus_method(method_name,
+                                       'org.openbmc.control.Chassis')
+            out = mthd()
+            return out
+        else:
+            exit (1)
+
 # Not working yet
     def get_host_settings(self):
         obj = self.bus.get_object('org.openbmc.settings.Host',

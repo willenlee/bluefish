@@ -1,3 +1,6 @@
+<%
+    setdefault ("SLOT_ID", "#")
+%>
 {
     "@odata.type": "#ManagerCollection.ManagerCollection",
     "@odata.context": "/redfish/v1/$metadata#Managers",
@@ -6,7 +9,7 @@
     "Members@odata.count": 1,
     "Members": [
         {
-            "@odata.id": "/redfish/v1/Managers/1"       
+            "@odata.id": "/redfish/v1/Managers/System/{{SLOT_ID}}"
         }
     ]
 }

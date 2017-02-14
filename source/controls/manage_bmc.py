@@ -7,6 +7,17 @@ import obmc_dbuslib
 from manage_network import *
 from manage_fwversion import *
 
+def get_bmc_slot_id():
+    result = {}
+    op = 'SlotId'
+    try:
+        dbusctl = obmc_dbuslib.ObmcRedfishProviders()
+        pydata = dbusctl.get_slot_id(str(op))
+    except Exception, e:
+        return set_failure_dict(('Exception:', e), completion_code.failure)
+    result["SLOT_ID"] = str(pydata)
+    result[completion_code.cc_key] = completion_code.success
+    return result
 
 def set_bmc_warm_reset(action):
     result = {}

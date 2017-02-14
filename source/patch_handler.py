@@ -11,6 +11,7 @@ from controls.sys_works import ethernet_actions_results
 import controls.manage_bmc
 import controls.manage_network
 import controls.manage_user
+from authentication import pre_check_slot_id
 
 
 def execute_patch_request_actions(requested, action_map, tree=[]):
@@ -207,6 +208,7 @@ def validate_datetime(time):
 #########################
 @auth_basic(authentication.validate_user)
 def patch_chassis(slot_id):
+    pre_check_slot_id(slot_id)
     actions = {
         "IndicatorLED": (controls.manage_bmc.set_bmc_attention_led,
                          parameter_parser("setting", int, enums.IndicatorLED), {})
@@ -218,6 +220,7 @@ def patch_chassis(slot_id):
 ###################
 @auth_basic (authentication.validate_user)
 def patch_bmc (slot_id):
+    pre_check_slot_id(slot_id)
     actions = {
         "DateTime": (controls.manage_bmc.set_bmc_time,
             parameter_parser("datetime", str, validate_datetime), {})
@@ -229,6 +232,7 @@ def patch_bmc (slot_id):
 
 @auth_basic (authentication.validate_user)
 def patch_bmc_ethernet (slot_id, eth):
+    pre_check_slot_id(slot_id)
     if (eth == "eth1"):
         raise HTTPError (status = 405)
 
@@ -264,6 +268,7 @@ def patch_bmc_ethernet (slot_id, eth):
 ############################
 @auth_basic (authentication.validate_user)
 def patch_account (account):
+    pre_check_slot_id(slot_id)
     view_helper.verify_account_name (account)
     
     actions = {

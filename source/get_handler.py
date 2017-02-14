@@ -5,6 +5,7 @@ from bottle import HTTPError, auth_basic
 from authentication import pre_check_function_call
 from pre_settings import command_name_enum
 from controls.utils import set_failure_dict, completion_code
+from authentication import pre_check_slot_id
 
 import controls.manage_network
 import controls.manage_user
@@ -12,6 +13,7 @@ import controls.manage_logentry
 import controls.manage_fwversion
 import time
 import datetime
+
 
 def execute_get_request_queries (query_list, init_values = dict ()):
     """
@@ -109,11 +111,20 @@ def get_redfish_metadata ():
 
 @auth_basic (authentication.validate_user)
 def get_chassis_root ():
-    return view_helper.return_redfish_resource ("chassis_root")
+    query = [
+        (controls.manage_bmc.get_bmc_slot_id, {})
+    ]
+    result = execute_get_request_queries(query)
+
+    return view_helper.return_redfish_resource ("chassis_root", values = result)
 
 @auth_basic (authentication.validate_user)
 def get_managers_root ():
-    return view_helper.return_redfish_resource ("managers_root")
+    query = [
+        (controls.manage_bmc.get_bmc_slot_id, {})
+    ]
+    result = execute_get_request_queries(query)
+    return view_helper.return_redfish_resource ("managers_root", values = result)
 
 
 
@@ -123,10 +134,12 @@ def get_managers_root ():
 #########################
 @auth_basic (authentication.validate_user)
 def get_chassis (slot_id, patch = dict ()):
+    pre_check_slot_id(slot_id)
     query = [
-        (controls.manage_bmc.get_bmc_attention_led_status, {})
-    ]
+        (controls.manage_bmc.get_bmc_attention_led_status, {}),
+        (controls.manage_bmc.get_bmc_slot_id, {})
 
+    ]
     result = execute_get_request_queries(query)
     view_helper.update_and_replace_status_information(result, patch)
     return view_helper.return_redfish_resource ("chassis", values = result)
@@ -134,42 +147,93 @@ def get_chassis (slot_id, patch = dict ()):
 
 @auth_basic (authentication.validate_user)
 def get_chassis_thermal (slot_id):
-    return view_helper.return_redfish_resource ("chassis_thermal")
+    pre_check_slot_id(slot_id)
+    query = [
+        (controls.manage_bmc.get_bmc_slot_id, {})
+    ]
+    result = execute_get_request_queries(query)
+    return view_helper.return_redfish_resource ("chassis_thermal", values = result)
 
 def get_chassis_thermal_redundancy (slot_id, sensor_id):
-    return view_helper.return_redfish_resource ("chassis_thermal_redundancy")
+    pre_check_slot_id(slot_id)
+    query = [
+        (controls.manage_bmc.get_bmc_slot_id, {})
+    ]
+    result = execute_get_request_queries(query)
+    return view_helper.return_redfish_resource ("chassis_thermal_redundancy", values = result)
 
 @auth_basic (authentication.validate_user)
 def get_chassis_power (slot_id):
-    return view_helper.return_redfish_resource ("chassis_power")
+    pre_check_slot_id(slot_id)
+    query = [
+        (controls.manage_bmc.get_bmc_slot_id, {})
+    ]
+    result = execute_get_request_queries(query)
+    return view_helper.return_redfish_resource ("chassis_power", values = result)
 
 @auth_basic (authentication.validate_user)
 def get_chassis_power_redundancy (slot_id, psu_id):
-    return view_helper.return_redfish_resource ("chassis_power_redundancy")
+    pre_check_slot_id(slot_id)
+    query = [
+        (controls.manage_bmc.get_bmc_slot_id, {})
+    ]
+    result = execute_get_request_queries(query)
+    return view_helper.return_redfish_resource ("chassis_power_redundancy", values = result)
 
 @auth_basic (authentication.validate_user)
 def get_chassis_mainboard (slot_id):
-    return view_helper.return_redfish_resource ("chassis_mainboard")
+    pre_check_slot_id(slot_id)
+    query = [
+        (controls.manage_bmc.get_bmc_slot_id, {})
+    ]
+    result = execute_get_request_queries(query)
+    return view_helper.return_redfish_resource ("chassis_mainboard", values = result)
 
 @auth_basic (authentication.validate_user)
 def get_chassis_storage_enclosure (slot_id, se_id):
-    return view_helper.return_redfish_resource ("chassis_storage_enclosure")
+    pre_check_slot_id(slot_id)
+    query = [
+        (controls.manage_bmc.get_bmc_slot_id, {})
+    ]
+    result = execute_get_request_queries(query)
+    return view_helper.return_redfish_resource ("chassis_storage_enclosure", values = result)
 
 @auth_basic (authentication.validate_user)
 def get_chassis_storage_enclosure_storage (slot_id, se_id):
-    return view_helper.return_redfish_resource ("chassis_storage_enclosure_storage")
+    pre_check_slot_id(slot_id)
+    query = [
+        (controls.manage_bmc.get_bmc_slot_id, {})
+    ]
+    result = execute_get_request_queries(query)
+    return view_helper.return_redfish_resource ("chassis_storage_enclosure_storage", values = result)
 
 @auth_basic (authentication.validate_user)
 def get_chassis_storage_enclosure_power (slot_id, se_id):
-    return view_helper.return_redfish_resource ("chassis_storage_enclosure_power")
+    pre_check_slot_id(slot_id)
+    query = [
+            (controls.manage_bmc.get_bmc_slot_id, {})
+
+    ]
+    result = execute_get_request_queries(query)
+    return view_helper.return_redfish_resource ("chassis_storage_enclosure_power", values = result)
 
 @auth_basic (authentication.validate_user)
 def get_chassis_storage_enclosure_thermal (slot_id, se_id):
-    return view_helper.return_redfish_resource ("chassis_storage_enclosure_thermal")
+    pre_check_slot_id(slot_id)
+    query = [
+        (controls.manage_bmc.get_bmc_slot_id, {})
+    ]
+    result = execute_get_request_queries(query)
+    return view_helper.return_redfish_resource ("chassis_storage_enclosure_thermal", values = result)
 
 @auth_basic (authentication.validate_user)
 def get_chassis_storage_enclosure_drive (slot_id, se_id, dr_id):
-    return view_helper.return_redfish_resource ("chassis_storage_enclosure_drive")
+    pre_check_slot_id(slot_id)
+    query = [
+        (controls.manage_bmc.get_bmc_slot_id, {})
+    ]
+    result = execute_get_request_queries(query)
+    return view_helper.return_redfish_resource ("chassis_storage_enclosure_drive", values = result)
 
 
 
@@ -182,9 +246,11 @@ def get_chassis_storage_enclosure_drive (slot_id, se_id, dr_id):
 #########################
 @auth_basic (authentication.validate_user)
 def get_bmc (slot_id, patch = dict ()):
+    pre_check_slot_id(slot_id)
     query = [
         (controls.manage_fwversion.get_ocsfwversion, {}),
-        (controls.manage_bmc.show_bmc_time, {"edm": True})
+        (controls.manage_bmc.show_bmc_time, {"edm": True}),
+        (controls.manage_bmc.get_bmc_slot_id, {})
     ]
 
     result = execute_get_request_queries(query)
@@ -194,9 +260,10 @@ def get_bmc (slot_id, patch = dict ()):
 
 @auth_basic (authentication.validate_user)
 def get_bmc_networkprotocol (slot_id, patch = dict ()):
-
+    pre_check_slot_id(slot_id)
     query = [
-        (controls.manage_bmc.show_bmc_hostname, {})
+        (controls.manage_bmc.show_bmc_hostname, {}),
+        (controls.manage_bmc.get_bmc_slot_id, {})
     ]
     result = execute_get_request_queries(query)
     view_helper.update_and_replace_status_information(result, patch)
@@ -204,28 +271,25 @@ def get_bmc_networkprotocol (slot_id, patch = dict ()):
     
 @auth_basic (authentication.validate_user)
 def get_bmc_ethernets (slot_id):
-#    pre_check_function_call (op_category_enum.get_rackmanager_state)
-    
+    pre_check_slot_id(slot_id)
     query = [
-        (controls.manage_network.display_cli_interfaces, {})
+        (controls.manage_network.display_cli_interfaces, {}),
+        (controls.manage_bmc.get_bmc_slot_id, {})
     ]
     result = execute_get_request_queries (query)
-        
     return view_helper.return_redfish_resource ("bmc_ethernets", values = result)
 
 @auth_basic (authentication.validate_user)
 def get_bmc_ethernet (slot_id, eth, patch = dict ()):
-#    if (not patch):
-#        pre_check_function_call (op_category_enum.get_rackmanager_state)
-    
+    pre_check_slot_id(slot_id)
     query = [
         (controls.manage_network.get_network_mac_address, {"if_name":eth}),
         (controls.manage_network.get_network_ip_address, {"if_name":eth}),
         (controls.manage_network.get_network_subnetmask, {"if_name":eth}),
         (controls.manage_network.get_network_gateway, {}),
-        (controls.manage_network.get_network_status, {"if_name":eth})
+        (controls.manage_network.get_network_status, {"if_name":eth}),
+        (controls.manage_bmc.get_bmc_slot_id, {})
     ]
-    
     result = execute_get_request_queries (query)
     if ("InterfaceStatus" in result):
         result["InterfaceStatus"] = str (enums.State (
@@ -239,19 +303,32 @@ def get_bmc_ethernet (slot_id, eth, patch = dict ()):
 
 @auth_basic (authentication.validate_user)
 def get_bmc_log_services (slot_id):
-    return view_helper.return_redfish_resource ("bmc_log_service")
+    pre_check_slot_id(slot_id)
+    query = [
+        (controls.manage_bmc.get_bmc_attention_led_status, {}),
+        (controls.manage_bmc.get_bmc_slot_id, {})
+    ]
+    result = execute_get_request_queries(query)
+    return view_helper.return_redfish_resource ("bmc_log_service", values = result)
 
 @auth_basic (authentication.validate_user)
 def get_bmc_log (slot_id):
-    result = {}
+    pre_check_slot_id(slot_id)
+    query = [
+        (controls.manage_bmc.get_bmc_attention_led_status, {}),
+        (controls.manage_bmc.get_bmc_slot_id, {})
+    ]
+    result = execute_get_request_queries(query)
     result["DateTime"] = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
     
     return view_helper.return_redfish_resource ("bmc_log", values = result)  
 
 @auth_basic (authentication.validate_user)
 def get_bmc_log_entries (slot_id):
+    pre_check_slot_id(slot_id)
     query = [
-        (controls.manage_logentry.get_event_log_all, {})
+        (controls.manage_logentry.get_event_log_all, {}),
+        (controls.manage_bmc.get_bmc_slot_id, {})
     ]
 
     result = execute_get_request_queries (query)
@@ -260,8 +337,10 @@ def get_bmc_log_entries (slot_id):
     
 @auth_basic (authentication.validate_user)
 def get_bmc_log_entry (slot_id, entry):
+    pre_check_slot_id(slot_id)
     query = [
-        (controls.manage_logentry.get_event_log, {"log_id": entry})
+        (controls.manage_logentry.get_event_log, {"log_id": entry}),
+        (controls.manage_bmc.get_bmc_slot_id, {})
     ]
 
     result = execute_get_request_queries (query)
@@ -273,11 +352,21 @@ def get_bmc_log_entry (slot_id, entry):
     
 @auth_basic (authentication.validate_user)
 def get_bmc_serialinterfaces (slot_id):
-    return view_helper.return_redfish_resource ("bmc_serialinterfaces")
+    pre_check_slot_id(slot_id)
+    query = [
+        (controls.manage_bmc.get_bmc_slot_id, {})
+    ]
+    result = execute_get_request_queries(query)
+    return view_helper.return_redfish_resource ("bmc_serialinterfaces", values = result)
 
 @auth_basic (authentication.validate_user)
 def get_bmc_serialinterface (slot_id):
-    return view_helper.return_redfish_resource ("bmc_serialinterface")
+    pre_check_slot_id(slot_id)
+    query = [
+        (controls.manage_bmc.get_bmc_slot_id, {})
+    ]
+    result = execute_get_request_queries(query)
+    return view_helper.return_redfish_resource ("bmc_serialinterface", values = result)
 
 
 
