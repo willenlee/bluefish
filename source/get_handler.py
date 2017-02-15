@@ -11,6 +11,8 @@ import controls.manage_network
 import controls.manage_user
 import controls.manage_logentry
 import controls.manage_fwversion
+import controls.chassis_system_thermal
+
 import time
 import datetime
 
@@ -149,8 +151,10 @@ def get_chassis (slot_id, patch = dict ()):
 def get_chassis_thermal (slot_id):
     pre_check_slot_id(slot_id)
     query = [
-        (controls.manage_bmc.get_bmc_slot_id, {})
+        (controls.manage_bmc.get_bmc_slot_id, {}),
+        (controls.chassis_system_thermal.get_chassis_thermal, {})
     ]
+    
     result = execute_get_request_queries(query)
     return view_helper.return_redfish_resource ("chassis_thermal", values = result)
 
