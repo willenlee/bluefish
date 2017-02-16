@@ -135,6 +135,7 @@ def get_managers_root ():
 @auth_basic (authentication.validate_user)
 def get_chassis (slot_id, patch = dict ()):
     pre_check_slot_id(slot_id)
+
     query = [
         (controls.manage_bmc.get_bmc_slot_id, {}),
         (controls.manage_bmc.get_bmc_attention_led_status, {}),
@@ -150,12 +151,14 @@ def get_chassis (slot_id, patch = dict ()):
 @auth_basic (authentication.validate_user)
 def get_chassis_thermal (slot_id):
     pre_check_slot_id(slot_id)
+
     query = [
         (controls.manage_bmc.get_bmc_slot_id, {}),
         (controls.chassis_system_thermal.get_chassis_thermal, {})
     ]
     
     result = execute_get_request_queries(query)
+
     return view_helper.return_redfish_resource ("chassis_thermal", values = result)
 
 def get_chassis_thermal_redundancy (slot_id, sensor_id):
@@ -187,10 +190,15 @@ def get_chassis_power_redundancy (slot_id, psu_id):
 @auth_basic (authentication.validate_user)
 def get_chassis_mainboard (slot_id):
     pre_check_slot_id(slot_id)
+
     query = [
-        (controls.manage_bmc.get_bmc_slot_id, {})
+        (controls.manage_bmc.get_bmc_slot_id, {}),
+        (controls.chassis_system.get_chassis_power_state, {}),
+        (controls.chassis_system.get_chassis_fru, {})
     ]
+
     result = execute_get_request_queries(query)
+
     return view_helper.return_redfish_resource ("chassis_mainboard", values = result)
 
 @auth_basic (authentication.validate_user)
