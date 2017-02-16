@@ -298,11 +298,12 @@ class ObmcRedfishProviders(object):
                     if keys == "Version":
                         return str(item[system][keys])
 
-    def get_chassis_info(self):
+    def get_chassis_info(self, type):
         """Return a dictonary containng SerialNumber, UUID, PartNumber, and
         Name"""
         info = {}
-        item = self.get_inventory('MEMORY_BUFFER')
+        item = self.get_inventory(type)
+        
         for chassis, detail in item.items():
             for key, value in detail.items():
                 val = str(value)

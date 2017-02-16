@@ -11,6 +11,7 @@ import controls.manage_network
 import controls.manage_user
 import controls.manage_logentry
 import controls.manage_fwversion
+import controls.chassis_system
 import controls.chassis_system_thermal
 
 import time
@@ -128,9 +129,6 @@ def get_managers_root ():
     result = execute_get_request_queries(query)
     return view_helper.return_redfish_resource ("managers_root", values = result)
 
-
-
-
 #########################
 # Chassis components
 #########################
@@ -138,14 +136,16 @@ def get_managers_root ():
 def get_chassis (slot_id, patch = dict ()):
     pre_check_slot_id(slot_id)
     query = [
+        (controls.manage_bmc.get_bmc_slot_id, {}),
         (controls.manage_bmc.get_bmc_attention_led_status, {}),
-        (controls.manage_bmc.get_bmc_slot_id, {})
-
+        (controls.chassis_system.get_chassis_power_state, {}),
+        (controls.chassis_system.get_chassis_fru, {})
     ]
+    
     result = execute_get_request_queries(query)
     view_helper.update_and_replace_status_information(result, patch)
-    return view_helper.return_redfish_resource ("chassis", values = result)
 
+    return view_helper.return_redfish_resource ("chassis", values = result)
 
 @auth_basic (authentication.validate_user)
 def get_chassis_thermal (slot_id):
