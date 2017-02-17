@@ -188,9 +188,19 @@ REDFISH_RESOURCES = {
         get = get_handler.get_chassis_storage_enclosure_storage),
     "chassis_storage_enclosure_drive": redfish_resource(
         common=(
-            "/redfish/v1/Chassis/System/<slot_id>/StorageEnclosure<se_id>/Drives/Drive<dr_id>",
+            "/redfish/v1/Chassis/System/<slot_id>/StorageEnclosure<se_id>/Drives/Drive<disk_id>",
             "Chassis/SEDrive.tpl"),
         get=get_handler.get_chassis_storage_enclosure_drive),
+    "chassis_storage_enclosure_drive_power_on": redfish_resource(
+        common=(
+            "/redfish/v1/Chassis/System/<slot_id>/StorageEnclosure<se_id>/Drives/Drive<disk_id>/Actions/On",
+            ""),
+        post = post_handler.post_chassis_storage_enclosure_disk_power_on),
+    "chassis_storage_enclosure_drive_power_off": redfish_resource(
+        common=(
+            "/redfish/v1/Chassis/System/<slot_id>/StorageEnclosure<se_id>/Drives/Drive<disk_id>/Actions/Off",
+            ""),
+        post = post_handler.post_chassis_storage_enclosure_disk_power_off),
     "chassis_storage_enclosure_power" : redfish_resource (
         common = (
         "/redfish/v1/Chassis/System/<slot_id>/StorageEnclosure<se_id>/Power",

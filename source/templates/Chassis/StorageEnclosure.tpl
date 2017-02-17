@@ -1,5 +1,4 @@
 <%
-    setdefault ("SE_ID", "#")
     setdefault ("SLOT_ID", "#")
 %>
 
@@ -11,11 +10,11 @@
   "Id": "StorageEnclosure{{SE_ID}}",
   "Name": "External Enclosure {{SE_ID}}",
   "SKU": "Enclosure",
-  "Manufacturer": "Manufacturer Name",
+  "Manufacturer": "{{manufacturer}}",
   "AssetTag": "External Enclosure",
   "Model": "External Enclosure",
   "ChassisType": "Module",
-  "IndicatorLED": "Lit",
+  "IndicatorLED": "{{id_led}}",
   "Status": {
     "State": "Enabled",
     "Health": "OK"

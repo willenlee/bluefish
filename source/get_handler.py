@@ -13,6 +13,7 @@ import controls.manage_logentry
 import controls.manage_fwversion
 import controls.chassis_system
 import controls.chassis_system_thermal
+import controls.storage_enclosure
 
 import time
 import datetime
@@ -204,10 +205,18 @@ def get_chassis_mainboard (slot_id):
 @auth_basic (authentication.validate_user)
 def get_chassis_storage_enclosure (slot_id, se_id):
     pre_check_slot_id(slot_id)
+
+    if(not(1 <= int(se_id) and int(se_id) <= 4)):
+        raise HTTPError (status = 404)
+    
     query = [
-        (controls.manage_bmc.get_bmc_slot_id, {})
+        (controls.manage_bmc.get_bmc_slot_id, {}),
+        (controls.storage_enclosure.get_id_led_state, {"expander_id": int(se_id)}),
+        (controls.storage_enclosure.get_expander_fru, {"expander_id": int(se_id)})
     ]
+
     result = execute_get_request_queries(query)
+    print result
     return view_helper.return_redfish_resource ("chassis_storage_enclosure", values = result)
 
 @auth_basic (authentication.validate_user)
@@ -239,19 +248,20 @@ def get_chassis_storage_enclosure_thermal (slot_id, se_id):
     return view_helper.return_redfish_resource ("chassis_storage_enclosure_thermal", values = result)
 
 @auth_basic (authentication.validate_user)
-def get_chassis_storage_enclosure_drive (slot_id, se_id, dr_id):
+def get_chassis_storage_enclosure_drive (slot_id, se_id, disk_id):
     pre_check_slot_id(slot_id)
+
+    if(not(1 <= int(se_id) and int(se_id) <= 4)):
+        raise HTTPError (status = 404)
+    
     query = [
-        (controls.manage_bmc.get_bmc_slot_id, {})
+        (controls.manage_bmc.get_bmc_slot_id, {}),
+        (controls.storage_enclosure.get_expander_drive_status, {"expander_id": int(se_id),  "drive_id": int(disk_id)})
     ]
+
     result = execute_get_request_queries(query)
+
     return view_helper.return_redfish_resource ("chassis_storage_enclosure_drive", values = result)
-
-
-
-
-
-
 
 #########################
 # BMC components
