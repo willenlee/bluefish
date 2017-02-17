@@ -1,6 +1,6 @@
 <%
-    setdefault ("SE_ID", "#")
     setdefault ("SLOT_ID", "#")
+    setdefault ("SE_ID", "#")
 %>
 
 {
@@ -11,25 +11,40 @@
   "Id": "Thermal",
   "Name": "Thermal",
   "Temperatures": [
+    % for  i, (k, v) in enumerate(temperatures.iteritems()):
     {
-      "@odata.id": "/redfish/v1/Chassis/System/{{SLOT_ID}}/StorageEnclosure{{SE_ID}}/Thermal#/Temperatures/0",
-      "MemberId": "0",
-      "Name": "HDD Top Temp",
-      "SensorNumber": 16,
-      "Status": {
+        "PhysicalContext": "StorageBay",
+        <% if i != len(temperatures)-1:
+                closetag = ","
+            else:
+                closetag = ""
+         end %>
+        % for l, (ks, vs) in enumerate(v.iteritems()):
+            % if ks == "sensor_id":
+                "@odata.id": "/redfish/v1/Chassis/System/{{SLOT_ID}}/StorageEnclosure{{SE_ID}}/Thermal#/Temperatures/{{vs}}",
+                "MemberId": "{{vs}}",
+            % elif ks == "sensor_name":
+                "Name": "{{vs}}",
+            % elif ks == "sensor_number":
+                "SensorNumber": "{{vs}}",
+            % elif ks == "celsius":
+                "ReadingCelsius": "{{vs}}",
+                "MinReadingRange": 0,
+                "MaxReadingRange": 100,
+            % elif ks == "upper_critical_threshold":
+                "UpperThresholdCritical": "{{vs}}",
+            % end
+        % end
+        "Status": {
         "State": "Enabled",
         "Health": "OK"
-      },
-      "ReadingCelsius": 21,
-      "UpperThresholdCritical": 42,
-      "MinReadingRange": 0,
-      "MaxReadingRange": 200,
-      "PhysicalContext": "StorageBay",
-      "RelatedItem": [
-        {
-          "@odata.id": "/redfish/v1/Chassis/System/{{SLOT_ID}}/StorageEnclosure{{SE_ID}}"
-        }
-      ]
-    }
+        },
+        "RelatedItem": [
+            {
+                "@odata.id": "/redfish/v1/Chassis/System/{{SLOT_ID}}/StorageEnclosure{{SE_ID}}"
+            }
+        ]
+    }{{closetag}}
+    % end
   ]
 }

@@ -16,6 +16,13 @@ import exp_lib
 from obmc.dbuslib.bindings import get_dbus, DbusProperties, DbusObjectManager
 from utils import completion_code
 
+DBUS_NAME = 'org.openbmc.Sensors'
+DBUS_INTERFACE = 'org.freedesktop.DBus.Properties'
+
+SENSOR_VALUE_INTERFACE = 'org.openbmc.SensorValue'
+SENSOR_THRESHOLD_INTERFACE = 'org.openbmc.SensorThresholds'
+SENSOR_HWMON_INTERFACE = 'org.openbmc.HwmonSensor'
+
 bus = get_dbus()
 exp = exp_lib.expander()
 
@@ -145,3 +152,90 @@ def set_expander_drive_power(expander_id, drive_id, state):
     result[completion_code.cc_key] = completion_code.success
 
     return result
+
+sensor_expander4_temperature_table =\
+[\
+    # "/org/openbmc/sensors/StorageEnclosure4/HDD4_Brd_Status",\
+    # "/org/openbmc/sensors/StorageEnclosure4/HDD4_Drive_Status",\
+    # "/org/openbmc/sensors/StorageEnclosure4/HDD4_HSC_Power_Out",\
+    # "/org/openbmc/sensors/StorageEnclosure4/HDD4_HSC_Volt_Out",\
+    "/org/openbmc/sensors/StorageEnclosure4/HDD4_HSC_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure4/HDD4_Top_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure4/HDD4_Bot_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure4/HDD4_Drive1_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure4/HDD4_Drive2_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure4/HDD4_Drive3_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure4/HDD4_Drive4_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure4/HDD4_Drive5_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure4/HDD4_Drive6_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure4/HDD4_Drive7_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure4/HDD4_Drive8_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure4/HDD4_Drive9_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure4/HDD4_Drive10_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure4/HDD4_Drive11_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure4/HDD4_Drive12_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure4/HDD4_Drive13_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure4/HDD4_Drive14_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure4/HDD4_Drive15_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure4/HDD4_Drive16_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure4/HDD4_Drive17_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure4/HDD4_Drive18_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure4/HDD4_Drive19_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure4/HDD4_Drive20_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure4/HDD4_Drive21_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure4/HDD4_Drive22_Temp"
+]
+
+def get_storage_enclosure_thermal(expander_id):
+    result = {}
+    result['temperatures'] = collections.OrderedDict()
+
+    try:
+        if(expander_id == 1):
+            sensor_table = sensor_expander1_temperature_table
+        elif(expander_id == 2):
+            sensor_table = sensor_expander2_temperature_table
+        elif(expander_id == 3):
+            sensor_table = sensor_expander3_temperature_table
+        elif(expander_id == 4):
+            sensor_table = sensor_expander4_temperature_table
+        else:
+            print("Expander ID error!")
+            return set_failure_dict(('Exception:', e), completion_code.failure)
+            
+        for index in range(0, len(sensor_table)):
+            property = {}
+            property['sensor_id'] = index+1
+            property['sensor_name'] = sensor_table[index][len("/org/openbmc/sensors/StorageEnclosure4/"):]
+            property['sensor_number'] = 0
+            property['celsius'] = 0
+            property['upper_critical_threshold'] = 0
+        
+            object = bus.get_object(DBUS_NAME, sensor_table[index])
+            interface = dbus.Interface(object, DBUS_INTERFACE)
+
+            properties = interface.GetAll(SENSOR_VALUE_INTERFACE)
+            #print "\n".join(("%s: %s" % (k, properties[k]) for k in properties))
+            for property_name in properties:
+                if property_name == 'value':
+                    property['celsius'] = properties['value']
+
+            properties = interface.GetAll(SENSOR_THRESHOLD_INTERFACE)
+            #print "\n".join(("%s: %s" % (k, properties[k]) for k in properties))
+            for property_name in properties:
+                if property_name == 'critical_upper':
+                    property['upper_critical_threshold'] = str(properties['critical_upper'])
+
+            properties = interface.GetAll(SENSOR_HWMON_INTERFACE)
+            #print "\n".join(("%s: %s" % (k, properties[k]) for k in properties))
+            for property_name in properties:
+                if property_name == 'sensornumber':
+                    property['sensor_number'] = str(properties['sensornumber'])
+        
+            result['temperatures'][str(index)] = property
+
+    except Exception, e:
+        print "!!! DBus error !!!\n"
+    return result
+
+    
