@@ -153,12 +153,93 @@ def set_expander_drive_power(expander_id, drive_id, state):
 
     return result
 
+sensor_expander1_temperature_table =\
+[\
+    "/org/openbmc/sensors/StorageEnclosure1/HDD1_HSC_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure1/HDD1_Top_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure1/HDD1_Bot_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure1/HDD1_Drive1_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure1/HDD1_Drive2_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure1/HDD1_Drive3_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure1/HDD1_Drive4_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure1/HDD1_Drive5_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure1/HDD1_Drive6_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure1/HDD1_Drive7_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure1/HDD1_Drive8_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure1/HDD1_Drive9_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure1/HDD1_Drive10_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure1/HDD1_Drive11_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure1/HDD1_Drive12_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure1/HDD1_Drive13_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure1/HDD1_Drive14_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure1/HDD1_Drive15_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure1/HDD1_Drive16_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure1/HDD1_Drive17_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure1/HDD1_Drive18_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure1/HDD1_Drive19_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure1/HDD1_Drive20_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure1/HDD1_Drive21_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure1/HDD1_Drive22_Temp"
+]
+sensor_expander2_temperature_table =\
+[\
+    "/org/openbmc/sensors/StorageEnclosure2/HDD2_HSC_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure2/HDD2_Top_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure2/HDD2_Bot_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure2/HDD2_Drive1_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure2/HDD2_Drive2_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure2/HDD2_Drive3_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure2/HDD2_Drive4_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure2/HDD2_Drive5_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure2/HDD2_Drive6_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure2/HDD2_Drive7_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure2/HDD2_Drive8_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure2/HDD2_Drive9_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure2/HDD2_Drive10_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure2/HDD2_Drive11_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure2/HDD2_Drive12_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure2/HDD2_Drive13_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure2/HDD2_Drive14_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure2/HDD2_Drive15_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure2/HDD2_Drive16_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure2/HDD2_Drive17_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure2/HDD2_Drive18_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure2/HDD2_Drive19_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure2/HDD2_Drive20_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure2/HDD2_Drive21_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure2/HDD2_Drive22_Temp"
+]
+sensor_expander3_temperature_table =\
+[\
+    "/org/openbmc/sensors/StorageEnclosure3/HDD3_HSC_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure3/HDD3_Top_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure3/HDD3_Bot_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure3/HDD3_Drive1_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure3/HDD3_Drive2_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure3/HDD3_Drive3_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure3/HDD3_Drive4_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure3/HDD3_Drive5_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure3/HDD3_Drive6_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure3/HDD3_Drive7_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure3/HDD3_Drive8_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure3/HDD3_Drive9_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure3/HDD3_Drive10_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure3/HDD3_Drive11_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure3/HDD3_Drive12_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure3/HDD3_Drive13_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure3/HDD3_Drive14_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure3/HDD3_Drive15_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure3/HDD3_Drive16_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure3/HDD3_Drive17_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure3/HDD3_Drive18_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure3/HDD3_Drive19_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure3/HDD3_Drive20_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure3/HDD3_Drive21_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure3/HDD3_Drive22_Temp"
+]
+    
 sensor_expander4_temperature_table =\
 [\
-    # "/org/openbmc/sensors/StorageEnclosure4/HDD4_Brd_Status",\
-    # "/org/openbmc/sensors/StorageEnclosure4/HDD4_Drive_Status",\
-    # "/org/openbmc/sensors/StorageEnclosure4/HDD4_HSC_Power_Out",\
-    # "/org/openbmc/sensors/StorageEnclosure4/HDD4_HSC_Volt_Out",\
     "/org/openbmc/sensors/StorageEnclosure4/HDD4_HSC_Temp",\
     "/org/openbmc/sensors/StorageEnclosure4/HDD4_Top_Temp",\
     "/org/openbmc/sensors/StorageEnclosure4/HDD4_Bot_Temp",\
@@ -186,8 +267,41 @@ sensor_expander4_temperature_table =\
     "/org/openbmc/sensors/StorageEnclosure4/HDD4_Drive22_Temp"
 ]
 
+sensor_expander1_power_table =\
+[\
+    "/org/openbmc/sensors/StorageEnclosure1/HDD1_Brd_Status",\
+    "/org/openbmc/sensors/StorageEnclosure1/HDD1_Drive_Status",\
+    "/org/openbmc/sensors/StorageEnclosure1/HDD1_HSC_Power_Out",\
+    "/org/openbmc/sensors/StorageEnclosure1/HDD1_HSC_Volt_Out"
+]
+
+sensor_expander2_power_table =\
+[\
+    "/org/openbmc/sensors/StorageEnclosure2/HDD2_Brd_Status",\
+    "/org/openbmc/sensors/StorageEnclosure2/HDD2_Drive_Status",\
+    "/org/openbmc/sensors/StorageEnclosure2/HDD2_HSC_Power_Out",\
+    "/org/openbmc/sensors/StorageEnclosure2/HDD2_HSC_Volt_Out"
+]
+
+sensor_expander3_power_table =\
+[\
+    "/org/openbmc/sensors/StorageEnclosure3/HDD3_Brd_Status",\
+    "/org/openbmc/sensors/StorageEnclosure3/HDD3_Drive_Status",\
+    "/org/openbmc/sensors/StorageEnclosure3/HDD3_HSC_Power_Out",\
+    "/org/openbmc/sensors/StorageEnclosure3/HDD3_HSC_Volt_Out"
+]
+
+sensor_expander4_power_table =\
+[\
+    "/org/openbmc/sensors/StorageEnclosure4/HDD4_Brd_Status",\
+    "/org/openbmc/sensors/StorageEnclosure4/HDD4_Drive_Status",\
+    "/org/openbmc/sensors/StorageEnclosure4/HDD4_HSC_Power_Out",\
+    "/org/openbmc/sensors/StorageEnclosure4/HDD4_HSC_Volt_Out"
+]
+
 def get_storage_enclosure_thermal(expander_id):
     result = {}
+    result['SE_ID'] = expander_id
     result['temperatures'] = collections.OrderedDict()
 
     try:
@@ -202,7 +316,7 @@ def get_storage_enclosure_thermal(expander_id):
         else:
             print("Expander ID error!")
             return set_failure_dict(('Exception:', e), completion_code.failure)
-            
+        
         for index in range(0, len(sensor_table)):
             property = {}
             property['sensor_id'] = index+1
@@ -210,7 +324,7 @@ def get_storage_enclosure_thermal(expander_id):
             property['sensor_number'] = 0
             property['celsius'] = 0
             property['upper_critical_threshold'] = 0
-        
+
             object = bus.get_object(DBUS_NAME, sensor_table[index])
             interface = dbus.Interface(object, DBUS_INTERFACE)
 
@@ -238,4 +352,62 @@ def get_storage_enclosure_thermal(expander_id):
         print "!!! DBus error !!!\n"
     return result
 
+def get_storage_enclosure_power(expander_id):
+    result = {}
+
+    try:
+        if(expander_id == 1):
+            sensor_table = sensor_expander1_power_table
+        elif(expander_id == 2):
+            sensor_table = sensor_expander2_power_table
+        elif(expander_id == 3):
+            sensor_table = sensor_expander3_power_table
+        elif(expander_id == 4):
+            sensor_table = sensor_expander4_power_table
+        else:
+            print("Expander ID error!")
+            return set_failure_dict(('Exception:', e), completion_code.failure)
+        
+        result['SE_ID'] = expander_id
+        result['power_consumption'] = 0
+        result['sensor_number'] = 0
+        result['voltage_value'] = 0
+        result['upper_critical_threshold'] = 0
+        result['lower_critical_threshold'] = 0
+
+        object = bus.get_object(DBUS_NAME, sensor_table[2]) # HDD_HSC_Power_Out
+        interface = dbus.Interface(object, DBUS_INTERFACE)
+
+        properties = interface.GetAll(SENSOR_VALUE_INTERFACE)
+        #print "\n".join(("%s: %s" % (k, properties[k]) for k in properties))
+        for property_name in properties:
+            if property_name == 'value':
+                result['power_consumption'] = float(properties['value'])/1000
+
+        properties = interface.GetAll(SENSOR_HWMON_INTERFACE)
+        #print "\n".join(("%s: %s" % (k, properties[k]) for k in properties))
+        for property_name in properties:
+            if property_name == 'sensornumber':
+                result['sensor_number'] = str(properties['sensornumber'])    
+
+        object = bus.get_object(DBUS_NAME, sensor_table[3]) # HDD_HSC_Volt_Out
+        interface = dbus.Interface(object, DBUS_INTERFACE)
+
+        properties = interface.GetAll(SENSOR_VALUE_INTERFACE)
+        #print "\n".join(("%s: %s" % (k, properties[k]) for k in properties))
+        for property_name in properties:
+            if property_name == 'value':
+                result['voltage_value'] = float(properties['value'])/1000
+
+        properties = interface.GetAll(SENSOR_THRESHOLD_INTERFACE)
+        #print "\n".join(("%s: %s" % (k, properties[k]) for k in properties))
+        for property_name in properties:
+            if property_name == 'critical_upper':
+                result['upper_critical_threshold'] = str(properties['critical_upper'])
+            if property_name == 'critical_lower':
+                result['lower_critical_threshold'] = str(properties['critical_lower'])
+
+    except Exception, e:
+        print "!!! DBus error !!!\n"
+    return result
     

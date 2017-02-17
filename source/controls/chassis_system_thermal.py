@@ -71,7 +71,7 @@ def get_chassis_thermal():
             properties = interface.GetAll(SENSOR_VALUE_INTERFACE)
             for property_name in properties:
                 if property_name == 'value':
-                    property['value'] = str(int(properties['value'])/1000)
+                    property['value'] = float(properties['value'])/1000
 
             properties = interface.GetAll(SENSOR_THRESHOLD_INTERFACE)
             for property_name in properties:

@@ -9,7 +9,7 @@
   "@odata.type": "#Chassis.v1_3_0.Chassis",
   "Id": "MainBoard",
   "Name": "Management MainBoard",
-  "ChassisType": "RackMount",
+  "ChassisType": "Module",
   "Manufacturer": "{{manufacturer}}",
   "Model": "{{model_name}}",
   "SKU": "",

@@ -216,7 +216,7 @@ def get_chassis_storage_enclosure (slot_id, se_id):
     ]
 
     result = execute_get_request_queries(query)
-    print result
+
     return view_helper.return_redfish_resource ("chassis_storage_enclosure", values = result)
 
 @auth_basic (authentication.validate_user)
@@ -231,20 +231,32 @@ def get_chassis_storage_enclosure_storage (slot_id, se_id):
 @auth_basic (authentication.validate_user)
 def get_chassis_storage_enclosure_power (slot_id, se_id):
     pre_check_slot_id(slot_id)
-    query = [
-            (controls.manage_bmc.get_bmc_slot_id, {})
 
+    if(not(1 <= int(se_id) and int(se_id) <= 4)):
+        raise HTTPError (status = 404)
+    
+    query = [
+        (controls.manage_bmc.get_bmc_slot_id, {}),
+        (controls.storage_enclosure.get_storage_enclosure_power, {"expander_id": int(se_id)})
     ]
+
     result = execute_get_request_queries(query)
+
     return view_helper.return_redfish_resource ("chassis_storage_enclosure_power", values = result)
 
 @auth_basic (authentication.validate_user)
 def get_chassis_storage_enclosure_thermal (slot_id, se_id):
     pre_check_slot_id(slot_id)
+
+    if(not(1 <= int(se_id) and int(se_id) <= 4)):
+        raise HTTPError (status = 404)
+
     query = [
         (controls.storage_enclosure.get_storage_enclosure_thermal, {"expander_id": int(se_id)})
     ]
+
     result = execute_get_request_queries(query)
+
     return view_helper.return_redfish_resource ("chassis_storage_enclosure_thermal", values = result)
 
 @auth_basic (authentication.validate_user)
