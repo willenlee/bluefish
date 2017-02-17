@@ -378,23 +378,27 @@ def get_storage_enclosure_power(expander_id):
         object = bus.get_object(DBUS_NAME, sensor_table[2]) # HDD_HSC_Power_Out
         interface = dbus.Interface(object, DBUS_INTERFACE)
 
-        properties = interface.GetAll(SENSOR_VALUE_INTERFACE)
-        #print "\n".join(("%s: %s" % (k, properties[k]) for k in properties))
-        for property_name in properties:
-            if property_name == 'value':
-                result['power_consumption'] = float(properties['value'])/1000
-
+        adjust = 1
+        
         properties = interface.GetAll(SENSOR_HWMON_INTERFACE)
-        #print "\n".join(("%s: %s" % (k, properties[k]) for k in properties))
+        print "\n".join(("%s: %s" % (k, properties[k]) for k in properties))
         for property_name in properties:
             if property_name == 'sensornumber':
                 result['sensor_number'] = str(properties['sensornumber'])    
+            if property_name == 'adjust':
+                adjust = 1/float(properties['adjust'])    
 
+        properties = interface.GetAll(SENSOR_VALUE_INTERFACE)
+        print "\n".join(("%s: %s" % (k, properties[k]) for k in properties))
+        for property_name in properties:
+            if property_name == 'value':
+                result['power_consumption'] = float((properties['value'])/1000)*adjust
+                
         object = bus.get_object(DBUS_NAME, sensor_table[3]) # HDD_HSC_Volt_Out
         interface = dbus.Interface(object, DBUS_INTERFACE)
 
         properties = interface.GetAll(SENSOR_VALUE_INTERFACE)
-        #print "\n".join(("%s: %s" % (k, properties[k]) for k in properties))
+        print "\n".join(("%s: %s" % (k, properties[k]) for k in properties))
         for property_name in properties:
             if property_name == 'value':
                 result['voltage_value'] = float(properties['value'])/1000
