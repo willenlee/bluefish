@@ -265,7 +265,10 @@ def get_chassis_storage_enclosure_drive (slot_id, se_id, disk_id):
 
     if(not(1 <= int(se_id) and int(se_id) <= 4)):
         raise HTTPError (status = 404)
-    
+
+    if(not(1 <= int(disk_id) and int(disk_id) <= 22)):
+        raise HTTPError (status = 404)
+        
     query = [
         (controls.manage_bmc.get_bmc_slot_id, {}),
         (controls.storage_enclosure.get_expander_drive_status, {"expander_id": int(se_id),  "drive_id": int(disk_id)})

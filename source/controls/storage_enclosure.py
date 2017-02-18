@@ -135,6 +135,7 @@ def set_expander_drive_power(expander_id, drive_id, state):
 
     try:
         output = exp.SetPowerControl(expander_id-1, drive_id, state)
+
         if(output == "Error"):
             print "Expander %d - NON-ACK!" %(expander_id)
             return set_failure_dict(('Exception:', e), completion_code.failure)
@@ -153,6 +154,27 @@ def set_expander_drive_power(expander_id, drive_id, state):
 
     return result
 
+def set_expander_power(expander_id, state):
+    try:
+        exp.InitExpGpio('HSC_ON_HDB_'+str(expander_id)+'_R')
+        
+        if(state == 0):
+            output = exp.SetExpPowerStatus(expander_id-1, 'off')
+        else:
+            output = exp.SetExpPowerStatus(expander_id-1, 'on')
+
+        if(output == False):
+            print "Expander %d - NON-ACK!" %(expander_id)
+            return set_failure_dict(('Exception:', e), completion_code.failure)
+
+    except Exception, e:
+        return set_failure_dict(('Exception:', e), completion_code.failure)
+ 
+    result = {}
+    result[completion_code.cc_key] = completion_code.success
+
+    return result
+    
 sensor_expander1_temperature_table =\
 [\
     "/org/openbmc/sensors/StorageEnclosure1/HDD1_HSC_Temp",\
@@ -381,7 +403,7 @@ def get_storage_enclosure_power(expander_id):
         adjust = 1
         
         properties = interface.GetAll(SENSOR_HWMON_INTERFACE)
-        print "\n".join(("%s: %s" % (k, properties[k]) for k in properties))
+        #print "\n".join(("%s: %s" % (k, properties[k]) for k in properties))
         for property_name in properties:
             if property_name == 'sensornumber':
                 result['sensor_number'] = str(properties['sensornumber'])    
@@ -389,7 +411,7 @@ def get_storage_enclosure_power(expander_id):
                 adjust = 1/float(properties['adjust'])    
 
         properties = interface.GetAll(SENSOR_VALUE_INTERFACE)
-        print "\n".join(("%s: %s" % (k, properties[k]) for k in properties))
+        #print "\n".join(("%s: %s" % (k, properties[k]) for k in properties))
         for property_name in properties:
             if property_name == 'value':
                 result['power_consumption'] = float((properties['value'])/1000)*adjust
@@ -398,7 +420,7 @@ def get_storage_enclosure_power(expander_id):
         interface = dbus.Interface(object, DBUS_INTERFACE)
 
         properties = interface.GetAll(SENSOR_VALUE_INTERFACE)
-        print "\n".join(("%s: %s" % (k, properties[k]) for k in properties))
+        #print "\n".join(("%s: %s" % (k, properties[k]) for k in properties))
         for property_name in properties:
             if property_name == 'value':
                 result['voltage_value'] = float(properties['value'])/1000

@@ -211,6 +211,16 @@ REDFISH_RESOURCES = {
         "/redfish/v1/Chassis/System/<slot_id>/StorageEnclosure<se_id>/Thermal",
         "Chassis/SEThermal.tpl"),
         get = get_handler.get_chassis_storage_enclosure_thermal),
+    "chassis_storage_enclosure_power_on": redfish_resource(
+        common=(
+            "/redfish/v1/Chassis/System/<slot_id>/StorageEnclosure<se_id>/Actions/On",
+            ""),
+        post = post_handler.post_chassis_storage_enclosure_power_on),
+    "chassis_storage_enclosure_power_off": redfish_resource(
+        common=(
+            "/redfish/v1/Chassis/System/<slot_id>/StorageEnclosure<se_id>/Actions/Off",
+            ""),
+        post = post_handler.post_chassis_storage_enclosure_power_off),
 
 
     

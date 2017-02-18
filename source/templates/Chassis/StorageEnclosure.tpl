@@ -41,6 +41,12 @@
       "Actions":{
         "#Chassis.MasterWriteRead": {
           "target": "/redfish/v1/Chassis/System/{{SLOT_ID}}/StorageEnclosure{{SE_ID}}/Actions/Chassis.MasterWriteRead"
+        },
+        "#StorageEnclosure.PowerOn": {
+          "Target": "/redfish/v1/Chassis/System/{{SLOT_ID}}/StorageEnclosure{{SE_ID}}/Actions/On"
+        },
+        "#StorageEnclosure.PowerOff": {
+          "Target": "/redfish/v1/Chassis/System/{{SLOT_ID}}/StorageEnclosure{{SE_ID}}/Actions/Off"
         }
       }
     }
