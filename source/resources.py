@@ -261,7 +261,7 @@ REDFISH_RESOURCES = {
         get = get_handler.get_bmc_log),
     "bmc_clear_log" : redfish_resource (
         common = (
-        "/redfish/v1/Managers/System/<slot_id>/LogServices/Log/Actions/LogService.Reset",
+        "/redfish/v1/Managers/System/<slot_id>/LogServices/Log1/Actions/LogService.Reset",
         "GeneralError.tpl"),
         post = post_handler.post_bmc_clear_log),
         
