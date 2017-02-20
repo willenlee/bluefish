@@ -14,7 +14,7 @@ sys.path.append ("/usr/sbin")
 import exp_lib
 
 from obmc.dbuslib.bindings import get_dbus, DbusProperties, DbusObjectManager
-from utils import completion_code
+from controls.utils import set_failure_dict, completion_code
 
 DBUS_NAME = 'org.openbmc.Sensors'
 DBUS_INTERFACE = 'org.freedesktop.DBus.Properties'
@@ -28,10 +28,19 @@ exp = exp_lib.expander()
 
 MAX_EXPANDER_DRIVES = 22
 
+def get_sensor_name(sensor_path):
+    latest_slash_offset = 0
+    for offset in range(0, len(sensor_path), 1):
+        if(sensor_path[offset] == '/'):
+            latest_slash_offset = offset
+            
+    return sensor_path[(latest_slash_offset+1):]
+
 def string_to_int(input_data):
-        temp = [input_data[x:x+3] for x in xrange(0, len(input_data), 3)]
-        output_data = [int(temp[x],16) for x in range(0,len(temp))]
-        return output_data
+    temp = [input_data[x:x+3] for x in xrange(0, len(input_data), 3)]
+    output_data = [int(temp[x],16) for x in range(0,len(temp))]
+
+    return output_data
 
 def get_id_led_state(expander_id): #TBD
     result = {}
@@ -48,6 +57,41 @@ def get_id_led_state(expander_id): #TBD
     else:
         result['id_led'] = 'On'
 
+    result[completion_code.cc_key] = completion_code.success
+
+    return result
+
+def get_expander_firmware_version(expander_id):
+    result = {}
+
+    try:
+        output = exp.GetExpanderInfo(expander_id-1)
+
+        if(output == "Error"):
+            print "Expander %d - NON-ACK!" %(expander_id)
+            return set_failure_dict(('Exception:', e), completion_code.failure)
+        else:
+            data = string_to_int(output)
+        
+        if(data[0] != 0x00):
+            print "Expander %d - GetExpanderInfo() error!" %(expander_id)
+            return set_failure_dict(('Exception:', e), completion_code.failure)
+        
+        print ' '.join([hex(i) for i in data])
+        
+        version = ''
+        
+        for i in range(1, 10):
+            if(data[i] == 0x00):
+                break;
+            else:
+                version += chr(data[i])
+
+    except Exception, e:
+        return set_failure_dict(('Exception:', e), completion_code.failure)
+    
+    result['SE_ID'] = expander_id
+    result['firmware_version'] = version
     result[completion_code.cc_key] = completion_code.success
 
     return result
@@ -342,7 +386,7 @@ def get_storage_enclosure_thermal(expander_id):
         for index in range(0, len(sensor_table)):
             property = {}
             property['sensor_id'] = index+1
-            property['sensor_name'] = sensor_table[index][len("/org/openbmc/sensors/StorageEnclosure4/"):]
+            property['sensor_name'] = get_sensor_name(sensor_table[index])
             property['sensor_number'] = 0
             property['celsius'] = 0
             property['upper_critical_threshold'] = 0
@@ -405,8 +449,6 @@ def get_storage_enclosure_power(expander_id):
         properties = interface.GetAll(SENSOR_HWMON_INTERFACE)
         #print "\n".join(("%s: %s" % (k, properties[k]) for k in properties))
         for property_name in properties:
-            if property_name == 'sensornumber':
-                result['sensor_number'] = str(properties['sensornumber'])    
             if property_name == 'adjust':
                 adjust = 1/float(properties['adjust'])    
 
@@ -418,6 +460,12 @@ def get_storage_enclosure_power(expander_id):
                 
         object = bus.get_object(DBUS_NAME, sensor_table[3]) # HDD_HSC_Volt_Out
         interface = dbus.Interface(object, DBUS_INTERFACE)
+
+        properties = interface.GetAll(SENSOR_HWMON_INTERFACE)
+        #print "\n".join(("%s: %s" % (k, properties[k]) for k in properties))
+        for property_name in properties:
+            if property_name == 'sensornumber':
+                result['sensor_number'] = str(properties['sensornumber'])    
 
         properties = interface.GetAll(SENSOR_VALUE_INTERFACE)
         #print "\n".join(("%s: %s" % (k, properties[k]) for k in properties))

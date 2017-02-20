@@ -20,9 +20,20 @@ SENSOR_HWMON_INTERFACE = 'org.openbmc.HwmonSensor'
 
 bus = get_dbus()
 
+def get_sensor_name(sensor_path):
+    latest_slash_offset = 0
+    for offset in range(0, len(sensor_path), 1):
+        if(sensor_path[offset] == '/'):
+            latest_slash_offset = offset
+            
+    return sensor_path[(latest_slash_offset+1):]
+
 sensor_mainboard_temperature_table =\
 [\
     "/org/openbmc/sensors/temperature/Main_Board_Temp",\
+    "/org/openbmc/sensors/Fans/Fan_HSC_Temp",\
+    "/org/openbmc/sensors/temperature/PDB_Temp",\
+    "/org/openbmc/sensors/Fans/Fan_HSC_Temp",\
     "/org/openbmc/sensors/Fans/Fan_HSC_Temp"\
 ]
 
@@ -62,9 +73,10 @@ def get_chassis_thermal():
             property = {}
             property['sensor_id'] = index+1
             property['sensor_number'] = 0
+            property['sensor_name'] = get_sensor_name(sensor_mainboard_temperature_table[index])
             property['value'] = 0
             property['upper_critical_threshold'] = 0
-        
+                
             object = bus.get_object(DBUS_NAME, sensor_mainboard_temperature_table[index])
             interface = dbus.Interface(object, DBUS_INTERFACE)
 

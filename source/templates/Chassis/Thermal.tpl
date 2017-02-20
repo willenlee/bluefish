@@ -13,7 +13,6 @@
     % for  i, (k, v) in enumerate(temperatures.iteritems()):
     {
         "PhysicalContext": "SystemBoard",
-        "Name": "Main Board Temp",
         <% if i != len(temperatures)-1:
                 closetag = ","
             else:
@@ -25,6 +24,8 @@
                 "MemberId": "{{vs}}",
             % elif ks == "sensor_number":
                 "SensorNumber": "{{vs}}",
+            % elif ks == "sensor_name":
+                "Name": "{{vs}}",
             % elif ks == "value":
                 "ReadingCelsius": "{{vs}}",
             % elif ks == "upper_critical_threshold":

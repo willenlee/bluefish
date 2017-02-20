@@ -82,7 +82,7 @@
       }
       ],
       "Oem": {
-        "FWVersion": "1.00"
+        "FWVersion": "{{firmware_version}}"
       }
     }
   }

@@ -222,10 +222,14 @@ def get_chassis_storage_enclosure (slot_id, se_id):
 @auth_basic (authentication.validate_user)
 def get_chassis_storage_enclosure_storage (slot_id, se_id):
     pre_check_slot_id(slot_id)
+
     query = [
-        (controls.manage_bmc.get_bmc_slot_id, {})
+        (controls.manage_bmc.get_bmc_slot_id, {}),
+        (controls.storage_enclosure.get_expander_firmware_version, {"expander_id": int(se_id)})
     ]
+
     result = execute_get_request_queries(query)
+
     return view_helper.return_redfish_resource ("chassis_storage_enclosure_storage", values = result)
 
 @auth_basic (authentication.validate_user)
