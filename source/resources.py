@@ -182,6 +182,11 @@ REDFISH_RESOURCES = {
         "Chassis/StorageEnclosure.tpl"),
         get = get_handler.get_chassis_storage_enclosure,
         patch = patch_handler.patch_chassis_storage_enclosure),
+    "chassis_se_master_write_read" : redfish_resource (
+        common = (
+        "/redfish/v1/Chassis/System/<slot_id>/StorageEnclosure<se_id>/Actions/Chassis.MasterWriteRead",
+        "Chassis/SeI2cData.tpl"),
+        post = post_handler.post_chassis_se_master_write_read),
     "chassis_storage_enclosure_storage" : redfish_resource (
         common = (
         "/redfish/v1/Chassis/System/<slot_id>/StorageEnclosure<se_id>/Storage",
@@ -289,17 +294,16 @@ REDFISH_RESOURCES = {
             "/redfish/v1/Managers/System/<slot_id>/Actions/Manager.Reset",
             ""),
         post = post_handler.post_bmc_warm_reset),
-#    "bmc_master_write_read" : redfish_resource (
-#        common = (
-#            "/redfish/v1/Managers/System/<slot_id>/Actions/Manager.MasterWriteRead",
-#            ""),
-#        post = post_handler.post_bmc_master_write_read),
-#    "bmc_master_phase_write_read" : redfish_resource (
-#        common = (
-#            "/redfish/v1/Managers/System/<slot_id>/Actions/Manager.MasterPhaseWriteRead",
-#            ""),
-#        post = post_handler.post_bmc_master_phase_write_read),
-        
+    "bmc_master_write_read": redfish_resource(
+        common=(
+            "/redfish/v1/Managers/System/<slot_id>/Actions/Manager.MasterWriteRead",
+            "BMC/BMCI2cData.tpl"),
+        post=post_handler.post_bmc_master_write_read),
+    "bmc_master_phase_write_read": redfish_resource(
+        common=(
+            "/redfish/v1/Managers/System/<slot_id>/Actions/Manager.MasterPhaseWriteRead",
+            "BMC/BMCI2cData.tpl"),
+        post=post_handler.post_bmc_master_phase_write_read),
 
  
     ############################

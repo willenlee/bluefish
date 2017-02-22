@@ -6,6 +6,93 @@ import datetime
 import obmc_dbuslib
 from manage_network import *
 from manage_fwversion import *
+import subprocess
+
+def PSU_switch_phase(bus, slaveaddress, pmbusphase):
+    PSU_PHASE = '0x04'
+    cmd = 'i2cset -y -f ' + bus + ' ' + slaveaddress + ' ' + PSU_PHASE + ' ' + pmbusphase
+    return subprocess.call(cmd, shell=True)
+
+
+def bmc_i2c_master_phase_write_read(bus, slaveaddress, pmbusphase, readcount, writedata):
+    result = {}
+    if (("0x" in slaveaddress) & ("0x" in pmbusphase) & ("0x" in writedata)) != True:
+        return set_failure_dict("Hexadecimal numbers must prefixed with 0x?", completion_code.failure)
+
+    if (int(pmbusphase.replace('0x', '')) > 2):
+        return set_failure_dict("PSU phase value must be between 0~2", completion_code.failure)
+    if PSU_switch_phase(bus, slaveaddress, pmbusphase) != 0:
+        return set_failure_dict("Switching PSU phase failed", completion_code.failure)
+
+    if int(readcount.replace('0x', '')) == 0 :
+        cmd = 'i2cset -y -f ' +  bus + ' ' + slaveaddress + ' ' + writedata
+        return_code = subprocess.call(cmd, shell = True)
+        if return_code != 0:
+            if PSU_switch_phase(bus, slaveaddress, "0xFF") != 0:
+                return set_failure_dict("Switching to default phase failed", completion_code.failure)
+            return set_failure_dict("Write failed", completion_code.failure)
+        else:
+            result["BytesRead"] = 'Write success'
+    else:
+        if int(readcount.replace('0x', '')) == 1:
+            tool = 'i2cget'
+            op = 'b'
+        elif int(readcount.replace('0x', '')) == 2:
+            tool = 'i2cget'
+            op = 'w'
+        else:
+            if PSU_switch_phase(bus, slaveaddress, "0xFF") != 0:
+                return set_failure_dict("Switching to default phase failed", completion_code.failure)
+            return set_failure_dict("ReadCount value must be between 0~2", completion_code.failure)
+
+        cmd = tool  +' -y -f ' + bus + ' ' + slaveaddress + ' ' + writedata + ' ' + op
+        proc = subprocess.Popen([cmd], stdout=subprocess.PIPE, shell = True)
+        (rdata, return_code) = proc.communicate()
+        newdata = rdata.replace('\n', ' ')
+        if newdata != "":
+            result["BytesRead"] = str(newdata)
+        else:
+            if PSU_switch_phase(bus, slaveaddress, "0xFF") != 0:
+                return set_failure_dict("Switching to default phase failed", completion_code.failure)
+            return set_failure_dict("I2C Read failed", completion_code.failure)
+    result[completion_code.cc_key] = completion_code.success
+    if PSU_switch_phase(bus, slaveaddress, "0xFF") != 0:
+        return set_failure_dict("Switching to default phase failed", completion_code.failure)
+    return result
+
+
+def bmc_i2c_master_write_read(bus, slaveaddress, readcount, writedata):
+    result = {}
+    if (("0x" in slaveaddress) & ("0x" in writedata)) != True:
+        return set_failure_dict("Hexadecimal numbers must prefixed with 0x?", completion_code.failure)
+    if int(readcount.replace('0x', '')) == 0 :
+        cmd = 'i2cset -y -f ' +  bus + ' ' + slaveaddress + ' ' + writedata
+        return_code = subprocess.call(cmd, shell = True)
+        if return_code != 0:
+            return set_failure_dict("Write failed", completion_code.failure)
+        else:
+            result["BytesRead"] = 'Write success'
+    else:
+        if int(readcount.replace('0x', '')) == 1:
+            tool = 'i2cget'
+            op = 'b'
+        elif int(readcount.replace('0x', '')) == 2:
+            tool = 'i2cget'
+            op = 'w'
+        else:
+            return set_failure_dict("ReadCount value must be between 0~2", completion_code.failure)
+
+        cmd = tool  +' -y -f ' + bus + ' ' + slaveaddress + ' ' + writedata + ' ' + op
+        proc = subprocess.Popen([cmd], stdout=subprocess.PIPE, shell = True)
+        (rdata, return_code) = proc.communicate()
+        newdata = rdata.replace('\n', ' ')
+        if newdata != "":
+            result["BytesRead"] = str(newdata)
+        else:
+            return set_failure_dict("I2C Read failed", completion_code.failure)
+    result[completion_code.cc_key] = completion_code.success
+    return result
+
 
 def get_bmc_slot_id():
     result = {}
