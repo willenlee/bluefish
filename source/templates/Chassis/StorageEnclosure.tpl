@@ -1,5 +1,10 @@
 <%
     setdefault ("SLOT_ID", "#")
+    setdefault ("SE_ID", "#")
+    setdefault ("manufacturer", "")
+    setdefault ("asset_tag", "")
+    setdefault ("model_name", "")
+    setdefault ("power_state", "")
 %>
 
 {
@@ -14,6 +19,7 @@
   "AssetTag": "{{asset_tag}}",
   "Model": "{{model_name}}",
   "ChassisType": "Module",
+  "PowerState": "{{power_state}}",
   "IndicatorLED": "Lit",
   "Status": {
     "State": "Enabled",
@@ -41,12 +47,7 @@
       "Actions":{
         "#Chassis.MasterWriteRead": {
           "target": "/redfish/v1/Chassis/System/{{SLOT_ID}}/StorageEnclosure{{SE_ID}}/Actions/Chassis.MasterWriteRead"
-        },
-        "#StorageEnclosure.PowerOn": {
-          "Target": "/redfish/v1/Chassis/System/{{SLOT_ID}}/StorageEnclosure{{SE_ID}}/Actions/On"
-        },
-        "#StorageEnclosure.PowerOff": {
-          "Target": "/redfish/v1/Chassis/System/{{SLOT_ID}}/StorageEnclosure{{SE_ID}}/Actions/Off"
+        }
         }
       }
     }

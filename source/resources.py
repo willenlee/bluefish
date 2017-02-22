@@ -150,7 +150,7 @@ REDFISH_RESOURCES = {
         "/redfish/v1/Chassis/System/<slot_id>",
         "Chassis/Chassis.tpl"),
         get = get_handler.get_chassis,
-        patch=patch_handler.patch_chassis),
+        patch = patch_handler.patch_chassis),
    "chassis_thermal" : redfish_resource (
         common = (
         "/redfish/v1/Chassis/System/<slot_id>/Thermal",
@@ -180,7 +180,8 @@ REDFISH_RESOURCES = {
         common = (
         "/redfish/v1/Chassis/System/<slot_id>/StorageEnclosure<se_id>",
         "Chassis/StorageEnclosure.tpl"),
-        get = get_handler.get_chassis_storage_enclosure),
+        get = get_handler.get_chassis_storage_enclosure,
+        patch = patch_handler.patch_chassis_storage_enclosure),
     "chassis_storage_enclosure_storage" : redfish_resource (
         common = (
         "/redfish/v1/Chassis/System/<slot_id>/StorageEnclosure<se_id>/Storage",
@@ -211,16 +212,16 @@ REDFISH_RESOURCES = {
         "/redfish/v1/Chassis/System/<slot_id>/StorageEnclosure<se_id>/Thermal",
         "Chassis/SEThermal.tpl"),
         get = get_handler.get_chassis_storage_enclosure_thermal),
-    "chassis_storage_enclosure_power_on": redfish_resource(
-        common=(
-            "/redfish/v1/Chassis/System/<slot_id>/StorageEnclosure<se_id>/Actions/On",
-            ""),
-        post = post_handler.post_chassis_storage_enclosure_power_on),
-    "chassis_storage_enclosure_power_off": redfish_resource(
-        common=(
-            "/redfish/v1/Chassis/System/<slot_id>/StorageEnclosure<se_id>/Actions/Off",
-            ""),
-        post = post_handler.post_chassis_storage_enclosure_power_off),
+    # "chassis_storage_enclosure_power_on": redfish_resource(
+        # common=(
+            # "/redfish/v1/Chassis/System/<slot_id>/StorageEnclosure<se_id>/Actions/On",
+            # ""),
+        # post = post_handler.post_chassis_storage_enclosure_power_on),
+    # "chassis_storage_enclosure_power_off": redfish_resource(
+        # common=(
+            # "/redfish/v1/Chassis/System/<slot_id>/StorageEnclosure<se_id>/Actions/Off",
+            # ""),
+        # post = post_handler.post_chassis_storage_enclosure_power_off),
 
 
     

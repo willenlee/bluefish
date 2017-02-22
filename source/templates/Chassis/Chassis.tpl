@@ -1,5 +1,13 @@
 <%
     setdefault ("SLOT_ID", "#")
+    setdefault ("manufacturer", "")
+    setdefault ("model_name", "")
+    setdefault ("serial_number", "")
+    setdefault ("part_number", "")
+    setdefault ("asset_tag", "")
+    setdefault ("indicator_led", "")
+    setdefault ("power_state", "")
+    setdefault ("health_status", "")
 %>
 
 {
@@ -16,11 +24,11 @@
   "SerialNumber": "{{serial_number}}",
   "PartNumber": "{{part_number}}",
   "AssetTag": "{{asset_tag}}",
-  "IndicatorLED": "{{Chassis_IndicatorLED}}",
+  "IndicatorLED": "{{indicator_led}}",
   "PowerState": "{{power_state}}",
   "Status": {
     "State": "Enabled",
-    "Health": "OK"
+    "Health": "{{health_status}}"
   },
   "Thermal": {
     "@odata.id": "/redfish/v1/Chassis/System/{{SLOT_ID}}/Thermal"

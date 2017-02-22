@@ -196,17 +196,35 @@ def set_expander_drive_power(expander_id, drive_id, state):
 
     return result
 
-def set_expander_power(expander_id, state):
+def get_expander_power(expander_id):
+    result = {}
     try:
         exp.InitExpGpio('HSC_ON_HDB_'+str(expander_id)+'_R')
         
-        if(state == 0):
+        output = exp.GetExpPowerStatus(expander_id-1)
+        
+        if(output == 1):
+            result['power_state'] = 'On'
+        else:
+            result['power_state'] = 'Off'
+
+    except Exception, e:
+        return set_failure_dict(('Exception:', e), completion_code.failure)
+ 
+    result[completion_code.cc_key] = completion_code.success
+
+    return result
+    
+def set_expander_power(setting, expander_id):
+    try:
+        exp.InitExpGpio('HSC_ON_HDB_'+str(expander_id)+'_R')
+
+        if(str(setting) == 'Off'):
             output = exp.SetExpPowerStatus(expander_id-1, 'off')
         else:
             output = exp.SetExpPowerStatus(expander_id-1, 'on')
 
         if(output == False):
-            print "Expander %d - NON-ACK!" %(expander_id)
             return set_failure_dict(('Exception:', e), completion_code.failure)
 
     except Exception, e:

@@ -136,15 +136,15 @@ def get_managers_root ():
 @auth_basic (authentication.validate_user)
 def get_chassis (slot_id, patch = dict ()):
     pre_check_slot_id(slot_id)
-
+    
     query = [
         (controls.manage_bmc.get_bmc_slot_id, {}),
         (controls.manage_bmc.get_bmc_attention_led_status, {}),
         (controls.chassis_system.get_chassis_power_state, {}),
         (controls.chassis_system.get_chassis_fru, {})
     ]
-    
     result = execute_get_request_queries(query)
+    
     view_helper.update_and_replace_status_information(result, patch)
 
     return view_helper.return_redfish_resource ("chassis", values = result)
@@ -203,7 +203,7 @@ def get_chassis_mainboard (slot_id):
     return view_helper.return_redfish_resource ("chassis_mainboard", values = result)
 
 @auth_basic (authentication.validate_user)
-def get_chassis_storage_enclosure (slot_id, se_id):
+def get_chassis_storage_enclosure (slot_id, se_id, patch = dict ()):
     pre_check_slot_id(slot_id)
 
     if(not(1 <= int(se_id) and int(se_id) <= 4)):
@@ -212,6 +212,7 @@ def get_chassis_storage_enclosure (slot_id, se_id):
     query = [
         (controls.manage_bmc.get_bmc_slot_id, {}),
         (controls.storage_enclosure.get_id_led_state, {"expander_id": int(se_id)}),
+        (controls.storage_enclosure.get_expander_power, {"expander_id": int(se_id)}),
         (controls.storage_enclosure.get_expander_fru, {"expander_id": int(se_id)})
     ]
 

@@ -215,6 +215,20 @@ def patch_chassis(slot_id):
     }
     result = validate_patch_request_and_execute(actions, "chassis")
     return get_handler.get_chassis(slot_id, patch=result)
+
+@auth_basic(authentication.validate_user)
+def patch_chassis_storage_enclosure(slot_id, se_id):
+    pre_check_slot_id(slot_id)
+
+    actions = {
+        "PowerState": (controls.storage_enclosure.set_expander_power,
+                         parameter_parser("setting", int, enums.PowerState), {"expander_id": int(se_id)})
+    }
+
+    result = validate_patch_request_and_execute(actions, "chassis")
+
+    return get_handler.get_chassis_storage_enclosure(slot_id, se_id, patch=result)
+
 ###################
 # BMC components
 ###################
@@ -261,7 +275,6 @@ def patch_bmc_ethernet (slot_id, eth):
         view_helper.append_response_information (result, set_data)
         
     return get_handler.get_rack_manager_ethernet (eth, patch = result)
-   
     
 ############################
 # Account service components
