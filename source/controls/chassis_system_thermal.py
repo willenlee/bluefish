@@ -32,9 +32,7 @@ sensor_mainboard_temperature_table =\
 [\
     "/org/openbmc/sensors/temperature/Main_Board_Temp",\
     "/org/openbmc/sensors/Fans/Fan_HSC_Temp",\
-    "/org/openbmc/sensors/temperature/PDB_Temp",\
-    "/org/openbmc/sensors/Fans/Fan_HSC_Temp",\
-    "/org/openbmc/sensors/Fans/Fan_HSC_Temp"\
+    "/org/openbmc/sensors/temperature/PDB_Temp"\
 ]
 
 sensor_fan_speed_table =\
