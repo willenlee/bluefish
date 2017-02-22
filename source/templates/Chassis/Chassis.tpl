@@ -15,7 +15,7 @@
   "SKU": "",
   "SerialNumber": "{{serial_number}}",
   "PartNumber": "{{part_number}}",
-  "AssetTag": "CustomerWritableThingy",
+  "AssetTag": "{{asset_tag}}",
   "IndicatorLED": "{{Chassis_IndicatorLED}}",
   "PowerState": "{{power_state}}",
   "Status": {

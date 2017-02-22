@@ -96,19 +96,17 @@ def get_expander_firmware_version(expander_id):
 
     return result
 
-def get_expander_fru(expander_id): #TBD
+def get_expander_fru(expander_id):
     result = {}
-
+    fru_name = 'STORAGEENCLOSURE'+str(expander_id)
     try:
         dbusctl = obmc_dbuslib.ObmcRedfishProviders()
-        pydata = dbusctl.get_chassis_info('MAIN_PLANAR')
+        result = dbusctl.get_fru_info(fru_name)
 
     except Exception, e:
         return set_failure_dict(('Exception:', e), completion_code.failure)
     
     result['SE_ID'] = expander_id
-    result['manufacturer'] = 'Microsoft'
-    result['model_name'] = 'N/A'
     result[completion_code.cc_key] = completion_code.success
 
     return result

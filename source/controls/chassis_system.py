@@ -38,16 +38,10 @@ def get_chassis_fru():
 
     try:
         dbusctl = obmc_dbuslib.ObmcRedfishProviders()
-        pydata = dbusctl.get_chassis_info('MAIN_PLANAR')
-
+        result = dbusctl.get_fru_info('MOTHERBOARD')
     except Exception, e:
         return set_failure_dict(('Exception:', e), completion_code.failure)
 
-    result['manufacturer'] = 'Microsoft'
-    result['model_name'] = 'N/A'
-    result['part_number'] = pydata['PartNumber']
-    result['serial_number'] = pydata['SerialNumber']
-    
     result[completion_code.cc_key] = completion_code.success
 
     return result

@@ -11,10 +11,10 @@
   "Name": "External Enclosure {{SE_ID}}",
   "SKU": "Enclosure",
   "Manufacturer": "{{manufacturer}}",
-  "AssetTag": "External Enclosure",
-  "Model": "External Enclosure",
+  "AssetTag": "{{asset_tag}}",
+  "Model": "{{model_name}}",
   "ChassisType": "Module",
-  "IndicatorLED": "{{id_led}}",
+  "IndicatorLED": "Lit",
   "Status": {
     "State": "Enabled",
     "Health": "OK"
