@@ -12,10 +12,10 @@
   "Name": "Power",
   "PowerControl": [
     {
-      "@odata.id": "/redfish/v1/Chassis/System/{{SLOT_ID}}/StorageEnclosure{{SE_ID}}/Power#/PowerControl/0",
-      "MemberId": "0",
+      "@odata.id": "/redfish/v1/Chassis/System/{{SLOT_ID}}/StorageEnclosure{{SE_ID}}/Power#/PowerControl/1",
+      "MemberId": "1",
       "Name": "Storage Enclosure {{SE_ID}} HSC Power",
-      "PowerConsumedWatts": 8000,
+      "PowerConsumedWatts": "{{power_consumption}}",
       "PowerLimit": {
         "LimitInWatts": 9000,
         "LimitException": "LogEventOnly"
@@ -37,17 +37,17 @@
   ],
   "Voltages": [
     {
-      "@odata.id": "/redfish/v1/Chassis/System/{{SLOT_ID}}/StorageEnclosure{{SE_ID}}/Power#/Voltages/0",
-      "MemberId": "0",
+      "@odata.id": "/redfish/v1/Chassis/System/{{SLOT_ID}}/StorageEnclosure{{SE_ID}}/Power#/Voltages/1",
+      "MemberId": "1",
       "Name": "Storage Enclosure 1 HSC Voltage",
-      "SensorNumber": 39,
+      "SensorNumber": "{{sensor_number}}",
       "Status": {
         "State": "Enabled",
         "Health": "OK"
       },
-      "ReadingVolts": 12,
-      "UpperThresholdCritical": 13.2,
-      "LowerThresholdCritical": 10.8,
+      "ReadingVolts": "{{voltage_value}}",
+      "UpperThresholdCritical": "{{upper_critical_threshold}}",
+      "LowerThresholdCritical": "{{lower_critical_threshold}}",
       "MinReadingRange": 0,
       "MaxReadingRange": 20,
       "PhysicalContext": "PowerSupply",

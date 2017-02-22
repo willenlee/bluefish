@@ -10,13 +10,13 @@
   "Id": "MainBoard",
   "Name": "Management MainBoard",
   "ChassisType": "Module",
-  "Manufacturer": "ManufacturerName",
-  "Model": "ProductModelName",
+  "Manufacturer": "{{manufacturer}}",
+  "Model": "{{model_name}}",
   "SKU": "",
-  "SerialNumber": "2M220100SL",
-  "PartNumber": "",
+  "SerialNumber": "{{serial_number}}",
+  "PartNumber": "{{part_number}}",
   "AssetTag": "CustomerWritableThingy",
-  "PowerState": "On",
+  "PowerState": "{{power_state}}",
   "Status": {
     "State": "Enabled",
     "Health": "OK"

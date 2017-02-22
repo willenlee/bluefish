@@ -1,6 +1,10 @@
 <%
-    setdefault ("SE_ID", "#")
     setdefault ("SLOT_ID", "#")
+    setdefault ("SE_ID", "#")
+    setdefault ("manufacturer", "")
+    setdefault ("asset_tag", "")
+    setdefault ("model_name", "")
+    setdefault ("power_state", "")
 %>
 
 {
@@ -11,10 +15,11 @@
   "Id": "StorageEnclosure{{SE_ID}}",
   "Name": "External Enclosure {{SE_ID}}",
   "SKU": "Enclosure",
-  "Manufacturer": "Manufacturer Name",
-  "AssetTag": "External Enclosure",
-  "Model": "External Enclosure",
+  "Manufacturer": "{{manufacturer}}",
+  "AssetTag": "{{asset_tag}}",
+  "Model": "{{model_name}}",
   "ChassisType": "Module",
+  "PowerState": "{{power_state}}",
   "IndicatorLED": "Lit",
   "Status": {
     "State": "Enabled",
@@ -42,6 +47,7 @@
       "Actions":{
         "#Chassis.MasterWriteRead": {
           "target": "/redfish/v1/Chassis/System/{{SLOT_ID}}/StorageEnclosure{{SE_ID}}/Actions/Chassis.MasterWriteRead"
+        }
         }
       }
     }

@@ -10,58 +10,87 @@
   "Id": "Thermal",
   "Name": "Thermal",
   "Temperatures": [
+    % for  i, (k, v) in enumerate(temperatures.iteritems()):
     {
-      "@odata.id": "/redfish/v1/Chassis/System/{{SLOT_ID}}/Thermal#/Temperatures/0",
-      "MemberId": "0",
-      "Name": "Main Board Temp",
-      "SensorNumber": 16,
-      "Status": {
+        "PhysicalContext": "SystemBoard",
+        <% if i != len(temperatures)-1:
+                closetag = ","
+            else:
+                closetag = ""
+         end %>
+        % for l, (ks, vs) in enumerate(v.iteritems()):
+            % if ks == "sensor_id":
+                "@odata.id": "/redfish/v1/Chassis/System/{{SLOT_ID}}/Thermal#/Temperatures/{{vs}}",
+                "MemberId": "{{vs}}",
+            % elif ks == "sensor_number":
+                "SensorNumber": "{{vs}}",
+            % elif ks == "sensor_name":
+                "Name": "{{vs}}",
+            % elif ks == "value":
+                "ReadingCelsius": "{{vs}}",
+            % elif ks == "upper_critical_threshold":
+                "UpperThresholdCritical": "{{vs}}",
+            % end
+        % end
+        "MinReadingRange": 0,
+        "MaxReadingRange": 100,
+        "Status": {
         "State": "Enabled",
         "Health": "OK"
-      },
-      "ReadingCelsius": 21,
-      "UpperThresholdCritical": 42,
-      "MinReadingRange": 0,
-      "MaxReadingRange": 200,
-      "PhysicalContext": "SystemBoard",
-      "RelatedItem": [
-        {
-          "@odata.id": "/redfish/v1/Chassis/System/{{SLOT_ID}}"
-        }
-      ]
-    }
-
+        },
+        "RelatedItem": [
+            {
+                "@odata.id": "/redfish/v1/Chassis/System/{{SLOT_ID}}"
+            }
+        ]
+    }{{closetag}}
+    % end
   ],
   "Fans": [
+    % for  i, (k, v) in enumerate(fans.iteritems()):
     {
-      "@odata.id": "/redfish/v1/Chassis/System/{{SLOT_ID}}/Thermal#/Fans/0",
-      "MemberId": "0",
-      "Name": "BaseBoard System Fan",
-      "PhysicalContext": "Backplane",
-      "Status": {
-        "State": "Enabled",
-        "Health": "OK"
-      },
-      "Reading": 2100,
-      "ReadingUnits": "RPM",
-      "UpperThresholdCritical": 4200,
-      "LowerThresholdCritical": 5,
-      "MinReadingRange": 0,
-      "MaxReadingRange": 5000,
-      "Oem": {
-        "PWM": 50
-      },
-      "Redundancy": [
+        "PhysicalContext": "Backplane",
+        "Name": "BaseBoard System Fan",
+        <% if i != len(fans)-1:
+                closetag = ","
+            else:
+                closetag = ""
+         end %>
+        % for l, (ks, vs) in enumerate(v.iteritems()):
+            % if ks == "sensor_id":
+                "@odata.id": "/redfish/v1/Chassis/System/{{SLOT_ID}}/Thermal#/Fans/{{vs}}",
+                "MemberId": "{{vs}}",
+            % elif ks == "value":
+                "Reading": "{{vs}}",
+                "ReadingUnits": "RPM",
+            % elif ks == "upper_critical_threshold":
+                "UpperThresholdCritical": "{{vs}}",
+                "LowerThresholdCritical": 5,
+            % elif ks == "PWM":
+            "Oem": {
+                "PWM": "{{vs}}"
+            },
+            % end
+        % end
+        "MinReadingRange": 0,
+        "MaxReadingRange": 5000,
+        "PhysicalContext": "SystemBoard",
+        "Status": {
+            "State": "Enabled",
+            "Health": "OK"
+        },
+        "Redundancy": [
         {
-          "@odata.id": "/redfish/v1/Chassis/System/{{SLOT_ID}}/Thermal#/Redundancy/0"
+            "@odata.id": "/redfish/v1/Chassis/System/{{SLOT_ID}}/Thermal#/Redundancy/0"
         }
-      ],
-      "RelatedItem": [
-        {
-          "@odata.id": "/redfish/v1/Chassis/System/{{SLOT_ID}}"
-        }
-      ]
-    }
+        ],
+        "RelatedItem": [
+            {
+                "@odata.id": "/redfish/v1/Chassis/System/{{SLOT_ID}}"
+            }
+        ]
+    }{{closetag}}
+    % end
   ],
   "Redundancy": [
     {

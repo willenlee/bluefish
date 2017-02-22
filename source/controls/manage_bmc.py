@@ -94,14 +94,16 @@ def get_bmc_attention_led_status():
         return set_failure_dict(('Exception:', e),completion_code.failure)
     
     if(pydata == 'Off'):
-        result["Chassis_IndicatorLED"] = 'Off'
+        result["indicator_led"] = 'Off'
+        result['health_status'] = 'OK'
     elif (pydata == 'Lit'):
-        result["Chassis_IndicatorLED"] = 'Lit'
+        result["indicator_led"] = 'Lit'
+        result['health_status'] = 'Fail'
     elif (pydata == 'Blinking'):
-        result["Chassis_IndicatorLED"] = 'Blinking'
+        result["indicator_led"] = 'Blinking'
     else:
-        result["Chassis_IndicatorLED"] = 'Unknown'
-                
+        result["indicator_led"] = 'Unknown'
+        
     return set_success_dict(result)
 
 

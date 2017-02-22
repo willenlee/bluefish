@@ -1,8 +1,13 @@
 <%
     setdefault ("SLOT_ID", "#")
-    if defined ("TemplateDefault"):
-        setdefault ("Chassis_IndicatorLED", "")
-    end
+    setdefault ("manufacturer", "")
+    setdefault ("model_name", "")
+    setdefault ("serial_number", "")
+    setdefault ("part_number", "")
+    setdefault ("asset_tag", "")
+    setdefault ("indicator_led", "")
+    setdefault ("power_state", "")
+    setdefault ("health_status", "")
 %>
 
 {
@@ -10,22 +15,20 @@
   "@odata.context": "/redfish/v1/$metadata#Chassis",
   "@odata.id": "/redfish/v1/Chassis/System/{{SLOT_ID}}",
   "@odata.type": "#Chassis.v1_3_0.Chassis",
-  "Id": "1",
+  "Id": "{{SLOT_ID}}",
   "Name": "Computer System Chassis",
   "ChassisType": "RackMount",
-  "Manufacturer": "ManufacturerName",
-  "Model": "ProductModelName",
+  "Manufacturer": "{{manufacturer}}",
+  "Model": "{{model_name}}",
   "SKU": "",
-  "SerialNumber": "2M220100SL",
-  "PartNumber": "",
-  "AssetTag": "CustomerWritableThingy",
-  % if defined ("Chassis_IndicatorLED"):
-  "IndicatorLED": "{{Chassis_IndicatorLED}}",
-  % end
-  "PowerState": "On",
+  "SerialNumber": "{{serial_number}}",
+  "PartNumber": "{{part_number}}",
+  "AssetTag": "{{asset_tag}}",
+  "IndicatorLED": "{{indicator_led}}",
+  "PowerState": "{{power_state}}",
   "Status": {
     "State": "Enabled",
-    "Health": "OK"
+    "Health": "{{health_status}}"
   },
   "Thermal": {
     "@odata.id": "/redfish/v1/Chassis/System/{{SLOT_ID}}/Thermal"

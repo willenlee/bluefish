@@ -298,24 +298,38 @@ class ObmcRedfishProviders(object):
                     if keys == "Version":
                         return str(item[system][keys])
 
-    def get_chassis_info(self):
-        """Return a dictonary containng SerialNumber, UUID, PartNumber, and
-        Name"""
+    def get_fru_info(self, fru_name):
         info = {}
-        item = self.get_inventory('MEMORY_BUFFER')
+        
+        item = self.get_inventory('MAIN_PLANAR')
+        
+        info['UUID'] = ''
+        info['asset_tag'] = ''
+        info['manufacturer'] = ''
+        info['model_name'] = ''
+        info['part_number'] = ''
+        info['serial_number'] = ''
+
         for chassis, detail in item.items():
-            for key, value in detail.items():
-                val = str(value)
-                if key == 'Custom Field 1':
-                    info['UUID'] = val
-                elif key == 'Manufacturer':
-                    info['Manufacturer'] = val
-                elif key == 'Name':
-                    info['Model'] = val
-                elif key == 'Part Number':
-                    info['PartNumber'] = val
-                elif key == 'Serial Number':
-                    info['SerialNumber'] = val
+            path_list = chassis.split("/")
+            fru_instance_name = path_list[-1].upper()
+
+            if(fru_instance_name == fru_name):
+                # print "\n".join(("%s: %s" % (k, detail[k]) for k in detail)) 
+                for key, value in detail.items():
+                    val = str(value)
+                    if key == 'Custom Field 1':
+                        info['UUID'] = val
+                    elif key == 'Asset Tag':
+                        info['asset_tag'] = val
+                    elif key == 'Manufacturer':
+                        info['manufacturer'] = val
+                    elif key == 'Name':
+                        info['model_name'] = val
+                    elif key == 'Part Number':
+                        info['part_number'] = val
+                    elif key == 'Serial Number':
+                        info['serial_number'] = val
         return info
 
     def power_control(self, name):

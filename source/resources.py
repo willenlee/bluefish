@@ -150,7 +150,7 @@ REDFISH_RESOURCES = {
         "/redfish/v1/Chassis/System/<slot_id>",
         "Chassis/Chassis.tpl"),
         get = get_handler.get_chassis,
-        patch=patch_handler.patch_chassis),
+        patch = patch_handler.patch_chassis),
    "chassis_thermal" : redfish_resource (
         common = (
         "/redfish/v1/Chassis/System/<slot_id>/Thermal",
@@ -180,7 +180,8 @@ REDFISH_RESOURCES = {
         common = (
         "/redfish/v1/Chassis/System/<slot_id>/StorageEnclosure<se_id>",
         "Chassis/StorageEnclosure.tpl"),
-        get = get_handler.get_chassis_storage_enclosure),
+        get = get_handler.get_chassis_storage_enclosure,
+        patch = patch_handler.patch_chassis_storage_enclosure),
     "chassis_storage_enclosure_storage" : redfish_resource (
         common = (
         "/redfish/v1/Chassis/System/<slot_id>/StorageEnclosure<se_id>/Storage",
@@ -188,9 +189,19 @@ REDFISH_RESOURCES = {
         get = get_handler.get_chassis_storage_enclosure_storage),
     "chassis_storage_enclosure_drive": redfish_resource(
         common=(
-            "/redfish/v1/Chassis/System/<slot_id>/StorageEnclosure<se_id>/Drives/Drive<dr_id>",
+            "/redfish/v1/Chassis/System/<slot_id>/StorageEnclosure<se_id>/Drives/Drive<disk_id>",
             "Chassis/SEDrive.tpl"),
         get=get_handler.get_chassis_storage_enclosure_drive),
+    "chassis_storage_enclosure_drive_power_on": redfish_resource(
+        common=(
+            "/redfish/v1/Chassis/System/<slot_id>/StorageEnclosure<se_id>/Drives/Drive<disk_id>/Actions/On",
+            ""),
+        post = post_handler.post_chassis_storage_enclosure_disk_power_on),
+    "chassis_storage_enclosure_drive_power_off": redfish_resource(
+        common=(
+            "/redfish/v1/Chassis/System/<slot_id>/StorageEnclosure<se_id>/Drives/Drive<disk_id>/Actions/Off",
+            ""),
+        post = post_handler.post_chassis_storage_enclosure_disk_power_off),
     "chassis_storage_enclosure_power" : redfish_resource (
         common = (
         "/redfish/v1/Chassis/System/<slot_id>/StorageEnclosure<se_id>/Power",
@@ -201,8 +212,6 @@ REDFISH_RESOURCES = {
         "/redfish/v1/Chassis/System/<slot_id>/StorageEnclosure<se_id>/Thermal",
         "Chassis/SEThermal.tpl"),
         get = get_handler.get_chassis_storage_enclosure_thermal),
-
-
     
     #########################
     # BMC components
@@ -241,7 +250,7 @@ REDFISH_RESOURCES = {
         get = get_handler.get_bmc_log),
     "bmc_clear_log" : redfish_resource (
         common = (
-        "/redfish/v1/Managers/System/<slot_id>/LogServices/Log/Actions/LogService.Reset",
+        "/redfish/v1/Managers/System/<slot_id>/LogServices/Log1/Actions/LogService.Reset",
         "GeneralError.tpl"),
         post = post_handler.post_bmc_clear_log),
         

@@ -104,17 +104,37 @@ def post_bmc_warm_reset(slot_id):
     params = validate_action_parameters(validation)
     result = controls.manage_bmc.set_bmc_warm_reset(**params)
     return check_action_result(result)
+
 #####################
 # Chassis components
 #####################
-
 @auth_basic (authentication.validate_user)
-def post_chassis_storage_enclosure_disk (slot_id, se_id, disk_id):
+def post_chassis_storage_enclosure_disk_power_on(slot_id, se_id, disk_id):
     pre_check_slot_id(slot_id)
-    result = True
+
+    if(not(1 <= int(se_id) and int(se_id) <= 4)):
+        raise HTTPError (status = 404)
+
+    if(not(1 <= int(disk_id) and int(disk_id) <= 22)):
+        raise HTTPError (status = 404)
+
+    result = controls.storage_enclosure.set_expander_drive_power(int(se_id), int(disk_id), 1)
+
     return check_action_result (result)
 
+@auth_basic (authentication.validate_user)
+def post_chassis_storage_enclosure_disk_power_off(slot_id, se_id, disk_id):
+    pre_check_slot_id(slot_id)
 
+    if(not(1 <= int(se_id) and int(se_id) <= 4)):
+        raise HTTPError (status = 404)
+
+    if(not(1 <= int(disk_id) and int(disk_id) <= 22)):
+        raise HTTPError (status = 404)        
+
+    result = controls.storage_enclosure.set_expander_drive_power(int(se_id), int(disk_id), 0)
+
+    return check_action_result (result)
 
 ############################
 # Account service components

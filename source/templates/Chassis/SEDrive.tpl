@@ -1,6 +1,6 @@
 <%
-    setdefault ("SE_ID", "#")
     setdefault ("SLOT_ID", "#")
+    setdefault ("SE_ID", "#")
     setdefault ("DRIVE_ID", "#")
 %>
 
@@ -8,15 +8,15 @@
   "@odata.context": "/redfish/v1/$metadata#Drive",
   "@odata.id": "/redfish/v1/Chassis/System/{{SLOT_ID}}/StorageEnclosure{{SE_ID}}/Drives/Drive{{DRIVE_ID}}",
   "@odata.type": "#Drive.v1_1_0.Drive",
-  "IndicatorLED": "Lit",
-  "Revision": "S20A",
+  "IndicatorLED": "{{drive_id_led}}",
+  "Revision": "{{drive_revision}}",
   "Status": {
-    "State": "Enabled",
+    "State": "{{drive_status}}",
     "Health": "OK"
   },
   "MediaType": "HDD",
-  "CapableSpeedGbs": 12,
-  "NegotiatedSpeedGbs": 12,
+  "CapableSpeedGbs": "{{drive_speed}}",
+  "NegotiatedSpeedGbs": "{{drive_speed}}",
   "Links": {
   },
   "Actions": {
