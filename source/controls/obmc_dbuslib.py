@@ -57,7 +57,7 @@ LED_FUNCTIONS = {'Lit': 'setOn',
                  'BlinkSlow': 'setBlinkSlow',
                  'state': 'GetLedState'}
 
-LED_TYPE = ['identify', 'power', 'heartbeat']
+LED_TYPE = ['identify', 'health', 'heartbeat']
 
 INVENTORY_ITEMS = ['SYSTEM',
                    'MAIN_PLANAR',
