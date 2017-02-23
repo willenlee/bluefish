@@ -10,17 +10,15 @@ import exp_lib
 exp =  exp_lib.expander()
 
 DEFAULT_OUTDATA_SIZE = 256
-CMD_GetEpanderInfo     = "0A"
-expander_deviceid = "00"
 
 def se_i2c_master_write_read(se_id, writedata):
     result = {}
     if ("0x" in writedata) != True:
         return set_failure_dict("Hexadecimal numbers must prefixed with 0x?", completion_code.failure)
     exp_id = int(se_id) - 1
-    write_date = str(writedata.replace('0x', ''))
+    write_data = str(writedata.replace('0x', ''))
     try:
-        rdata = exp.handle_request(int(exp_id), write_date, 256)
+        rdata = exp.handle_request(int(exp_id), write_data, DEFAULT_OUTDATA_SIZE)
 
     except Exception, e:
         return set_failure_dict("Master Write Read failed", completion_code.failure)
