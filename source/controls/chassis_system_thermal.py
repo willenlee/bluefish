@@ -7,6 +7,7 @@
 import dbus
 import dbus.service
 import collections
+import math
 
 from obmc.dbuslib.bindings import get_dbus, DbusProperties, DbusObjectManager
 from utils import completion_code
@@ -21,12 +22,8 @@ SENSOR_HWMON_INTERFACE = 'org.openbmc.HwmonSensor'
 bus = get_dbus()
 
 def get_sensor_name(sensor_path):
-    latest_slash_offset = 0
-    for offset in range(0, len(sensor_path), 1):
-        if(sensor_path[offset] == '/'):
-            latest_slash_offset = offset
-            
-    return sensor_path[(latest_slash_offset+1):]
+    path_list = sensor_path.split("/")
+    return path_list[-1]
 
 sensor_mainboard_temperature_table =\
 [\
@@ -35,30 +32,24 @@ sensor_mainboard_temperature_table =\
     "/org/openbmc/sensors/temperature/PDB_Temp"\
 ]
 
-sensor_fan_speed_table =\
+sensor_fan_pwm_table =\
 [\
-    "/org/openbmc/sensors/speed/fan1",\
-    "/org/openbmc/sensors/speed/fan2",\
-    "/org/openbmc/sensors/speed/fan3",\
-    "/org/openbmc/sensors/speed/fan4"\
+    "/org/openbmc/sensors/speed/Fan_PWM_1",\
+    "/org/openbmc/sensors/speed/Fan_PWM_2",\
+    "/org/openbmc/sensors/speed/Fan_PWM_3",\
+    "/org/openbmc/sensors/speed/Fan_PWM_4"\
 ]
 
-sensor_fan_temperature_table =\
+sensor_fan_rpm_table =\
 [\
-    "/org/openbmc/sensors/Thermal/Fans/1",\
-    "/org/openbmc/sensors/Thermal/Fans/2",\
-    "/org/openbmc/sensors/Thermal/Fans/3",\
-    "/org/openbmc/sensors/Thermal/Fans/4",\
-    "/org/openbmc/sensors/Thermal/Fans/5",\
-    "/org/openbmc/sensors/Thermal/Fans/6",\
-    "/org/openbmc/sensors/Thermal/Fans/7",\
-    "/org/openbmc/sensors/Thermal/Fans/8"\
-]
-
-sensor_fan_table =\
-[\
-    "/org/openbmc/sensors/Fans/Fan_HSC_Power_Out",\
-    "/org/openbmc/sensors/Fans/Fan_HSC_Volt_Out"\
+    "/org/openbmc/sensors/Thermal/Fans/Fan_RPM_1",\
+    "/org/openbmc/sensors/Thermal/Fans/Fan_RPM_2",\
+    "/org/openbmc/sensors/Thermal/Fans/Fan_RPM_3",\
+    "/org/openbmc/sensors/Thermal/Fans/Fan_RPM_4",\
+    "/org/openbmc/sensors/Thermal/Fans/Fan_RPM_5",\
+    "/org/openbmc/sensors/Thermal/Fans/Fan_RPM_6",\
+    "/org/openbmc/sensors/Thermal/Fans/Fan_RPM_7",\
+    "/org/openbmc/sensors/Thermal/Fans/Fan_RPM_8"\
 ]
 
 def get_chassis_thermal():
@@ -78,24 +69,19 @@ def get_chassis_thermal():
             object = bus.get_object(DBUS_NAME, sensor_mainboard_temperature_table[index])
             interface = dbus.Interface(object, DBUS_INTERFACE)
 
-            properties = interface.GetAll(SENSOR_VALUE_INTERFACE)
-            for property_name in properties:
-                if property_name == 'value':
-                    property['value'] = float(properties['value'])/1000
+            scale = interface.Get(SENSOR_HWMON_INTERFACE, 'scale')
 
-            properties = interface.GetAll(SENSOR_THRESHOLD_INTERFACE)
-            for property_name in properties:
-                if property_name == 'critical_upper':
-                    property['upper_critical_threshold'] = str(properties['critical_upper'])
+            value = interface.Get(SENSOR_VALUE_INTERFACE, 'value')
 
-            properties = interface.GetAll(SENSOR_HWMON_INTERFACE)
-            for property_name in properties:
-                if property_name == 'sensornumber':
-                    property['sensor_number'] = str(properties['sensornumber'])
-        
+            property['value'] = value * math.pow(10, scale)
+
+            property['upper_critical_threshold'] = interface.Get(SENSOR_THRESHOLD_INTERFACE, 'critical_upper')
+
+            property['sensor_number'] = interface.Get(SENSOR_HWMON_INTERFACE, 'sensornumber')
+
             result['temperatures'][str(index)] = property
 
-        for index in range(0, len(sensor_fan_temperature_table)):
+        for index in range(0, len(sensor_fan_rpm_table)):
             property = {}
             property['sensor_id'] = index+1
             property['sensor_number'] = 0
@@ -103,32 +89,21 @@ def get_chassis_thermal():
             property['value'] = 0
             property['PWM'] = 0
 
-            object = bus.get_object(DBUS_NAME, sensor_fan_speed_table[index/2])
+            object = bus.get_object(DBUS_NAME, sensor_fan_pwm_table[index/2])
             interface = dbus.Interface(object, DBUS_INTERFACE)
 
             properties = interface.GetAll(SENSOR_VALUE_INTERFACE)
-            for property_name in properties:
-                if property_name == 'value':
-                    property['PWM'] = str(properties['value'])
+            property['PWM'] = interface.Get(SENSOR_VALUE_INTERFACE, 'value')
 
-            object = bus.get_object(DBUS_NAME, sensor_fan_temperature_table[index])
+            object = bus.get_object(DBUS_NAME, sensor_fan_rpm_table[index])
             interface = dbus.Interface(object, DBUS_INTERFACE)
+            
+            property['value'] = interface.Get(SENSOR_VALUE_INTERFACE, 'value')
 
-            properties = interface.GetAll(SENSOR_VALUE_INTERFACE)
-            for property_name in properties:
-                if property_name == 'value':
-                    property['value'] = str(properties['value'])
-            
-            properties = interface.GetAll(SENSOR_THRESHOLD_INTERFACE)
-            for property_name in properties:
-                if property_name == 'critical_upper':
-                    property['upper_critical_threshold'] = str(properties['critical_upper'])
-            
-            properties = interface.GetAll(SENSOR_HWMON_INTERFACE)
-            for property_name in properties:
-                if property_name == 'sensornumber':
-                    property['sensor_number'] = str(properties['sensornumber'])
-                   
+            property['upper_critical_threshold'] = interface.Get(SENSOR_THRESHOLD_INTERFACE, 'critical_upper')
+
+            property['sensor_number'] = interface.Get(SENSOR_HWMON_INTERFACE, 'sensornumber')
+
             result['fans'][str(index)] = property
             
     except Exception, e:

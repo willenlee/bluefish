@@ -328,6 +328,8 @@ class ObmcRedfishProviders(object):
                         info['model_name'] = val
                     elif key == 'Part Number':
                         info['part_number'] = val
+                    elif key == 'Model Number':
+                        info['model_number'] = val
                     elif key == 'Serial Number':
                         info['serial_number'] = val
         return info

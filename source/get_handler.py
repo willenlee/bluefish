@@ -13,6 +13,7 @@ import controls.manage_logentry
 import controls.manage_fwversion
 import controls.chassis_system
 import controls.chassis_system_thermal
+import controls.chassis_system_power
 import controls.storage_enclosure
 
 import time
@@ -173,10 +174,14 @@ def get_chassis_thermal_redundancy (slot_id, sensor_id):
 @auth_basic (authentication.validate_user)
 def get_chassis_power (slot_id):
     pre_check_slot_id(slot_id)
+
     query = [
-        (controls.manage_bmc.get_bmc_slot_id, {})
+        (controls.manage_bmc.get_bmc_slot_id, {}),
+        (controls.chassis_system_power.get_chassis_power, {})
     ]
+
     result = execute_get_request_queries(query)
+
     return view_helper.return_redfish_resource ("chassis_power", values = result)
 
 @auth_basic (authentication.validate_user)
@@ -215,7 +220,7 @@ def get_chassis_storage_enclosure (slot_id, se_id, patch = dict ()):
         (controls.storage_enclosure.get_expander_power, {"expander_id": int(se_id)}),
         (controls.storage_enclosure.get_expander_fru, {"expander_id": int(se_id)})
     ]
-
+    
     result = execute_get_request_queries(query)
 
     return view_helper.return_redfish_resource ("chassis_storage_enclosure", values = result)

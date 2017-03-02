@@ -9,6 +9,8 @@ import dbus.service
 import collections
 import obmc_dbuslib
 import sys
+import math
+import time
 
 sys.path.append ("/usr/sbin")
 import exp_lib
@@ -29,12 +31,8 @@ exp = exp_lib.expander()
 MAX_EXPANDER_DRIVES = 22
 
 def get_sensor_name(sensor_path):
-    latest_slash_offset = 0
-    for offset in range(0, len(sensor_path), 1):
-        if(sensor_path[offset] == '/'):
-            latest_slash_offset = offset
-            
-    return sensor_path[(latest_slash_offset+1):]
+    path_list = sensor_path.split("/")
+    return path_list[-1]
 
 def string_to_int(input_data):
     temp = [input_data[x:x+3] for x in xrange(0, len(input_data), 3)]
@@ -76,8 +74,6 @@ def get_expander_firmware_version(expander_id):
         if(data[0] != 0x00):
             print "Expander %d - GetExpanderInfo() error!" %(expander_id)
             return set_failure_dict(('Exception:', e), completion_code.failure)
-        
-        print ' '.join([hex(i) for i in data])
         
         version = ''
         
@@ -223,7 +219,9 @@ def set_expander_power(setting, expander_id):
             output = exp.SetExpPowerStatus(expander_id-1, 'off')
         else:
             output = exp.SetExpPowerStatus(expander_id-1, 'on')
-
+            time.sleep(1)
+            exp.InitExpanderIoExpander(expander_id-1)
+        
         if(output == False):
             return set_failure_dict(('Exception:', e), completion_code.failure)
 
@@ -411,23 +409,14 @@ def get_storage_enclosure_thermal(expander_id):
             interface = dbus.Interface(object, DBUS_INTERFACE)
 
             properties = interface.GetAll(SENSOR_VALUE_INTERFACE)
-            #print "\n".join(("%s: %s" % (k, properties[k]) for k in properties))
             for property_name in properties:
                 if property_name == 'value':
                     property['celsius'] = properties['value']
 
-            properties = interface.GetAll(SENSOR_THRESHOLD_INTERFACE)
-            #print "\n".join(("%s: %s" % (k, properties[k]) for k in properties))
-            for property_name in properties:
-                if property_name == 'critical_upper':
-                    property['upper_critical_threshold'] = str(properties['critical_upper'])
+            property['upper_critical_threshold'] = interface.Get(SENSOR_THRESHOLD_INTERFACE, 'critical_upper')
 
-            properties = interface.GetAll(SENSOR_HWMON_INTERFACE)
-            #print "\n".join(("%s: %s" % (k, properties[k]) for k in properties))
-            for property_name in properties:
-                if property_name == 'sensornumber':
-                    property['sensor_number'] = str(properties['sensornumber'])
-        
+            property['sensor_number'] = interface.Get(SENSOR_HWMON_INTERFACE, 'sensornumber')
+
             result['temperatures'][str(index)] = property
 
     except Exception, e:
@@ -460,42 +449,24 @@ def get_storage_enclosure_power(expander_id):
         object = bus.get_object(DBUS_NAME, sensor_table[2]) # HDD_HSC_Power_Out
         interface = dbus.Interface(object, DBUS_INTERFACE)
 
-        adjust = 1
-        
-        properties = interface.GetAll(SENSOR_HWMON_INTERFACE)
-        #print "\n".join(("%s: %s" % (k, properties[k]) for k in properties))
-        for property_name in properties:
-            if property_name == 'adjust':
-                adjust = 1/float(properties['adjust'])    
+        scale = interface.Get(SENSOR_HWMON_INTERFACE, 'scale')
+        adjust = interface.Get(SENSOR_HWMON_INTERFACE, 'adjust')
+        value = interface.Get(SENSOR_VALUE_INTERFACE, 'value')
 
-        properties = interface.GetAll(SENSOR_VALUE_INTERFACE)
-        #print "\n".join(("%s: %s" % (k, properties[k]) for k in properties))
-        for property_name in properties:
-            if property_name == 'value':
-                result['power_consumption'] = float((properties['value'])/1000)*adjust
-                
+        result['power_consumption'] = value * math.pow(10, scale) / adjust
+
         object = bus.get_object(DBUS_NAME, sensor_table[3]) # HDD_HSC_Volt_Out
         interface = dbus.Interface(object, DBUS_INTERFACE)
 
-        properties = interface.GetAll(SENSOR_HWMON_INTERFACE)
-        #print "\n".join(("%s: %s" % (k, properties[k]) for k in properties))
-        for property_name in properties:
-            if property_name == 'sensornumber':
-                result['sensor_number'] = str(properties['sensornumber'])    
+        result['sensor_number'] = interface.Get(SENSOR_HWMON_INTERFACE, 'sensornumber')
 
-        properties = interface.GetAll(SENSOR_VALUE_INTERFACE)
-        #print "\n".join(("%s: %s" % (k, properties[k]) for k in properties))
-        for property_name in properties:
-            if property_name == 'value':
-                result['voltage_value'] = float(properties['value'])/1000
+        scale = interface.Get(SENSOR_HWMON_INTERFACE, 'scale')
+        value = interface.Get(SENSOR_VALUE_INTERFACE, 'value')
 
-        properties = interface.GetAll(SENSOR_THRESHOLD_INTERFACE)
-        #print "\n".join(("%s: %s" % (k, properties[k]) for k in properties))
-        for property_name in properties:
-            if property_name == 'critical_upper':
-                result['upper_critical_threshold'] = str(properties['critical_upper'])
-            if property_name == 'critical_lower':
-                result['lower_critical_threshold'] = str(properties['critical_lower'])
+        result['voltage_value'] = value * math.pow(10, scale)
+
+        result['upper_critical_threshold'] = interface.Get(SENSOR_THRESHOLD_INTERFACE, 'critical_upper')
+        result['lower_critical_threshold'] = interface.Get(SENSOR_THRESHOLD_INTERFACE, 'critical_lower')
 
     except Exception, e:
         print "!!! DBus error !!!\n"

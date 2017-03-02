@@ -48,7 +48,6 @@
         "#Chassis.MasterWriteRead": {
           "target": "/redfish/v1/Chassis/System/{{SLOT_ID}}/StorageEnclosure{{SE_ID}}/Actions/Chassis.MasterWriteRead"
         }
-        }
       }
     }
   },
