@@ -10,6 +10,7 @@ import collections
 import obmc_dbuslib
 import sys
 import math
+import time
 
 sys.path.append ("/usr/sbin")
 import exp_lib
@@ -218,7 +219,9 @@ def set_expander_power(setting, expander_id):
             output = exp.SetExpPowerStatus(expander_id-1, 'off')
         else:
             output = exp.SetExpPowerStatus(expander_id-1, 'on')
-
+            time.sleep(1)
+            exp.InitExpanderIoExpander(expander_id-1)
+        
         if(output == False):
             return set_failure_dict(('Exception:', e), completion_code.failure)
 
@@ -447,9 +450,10 @@ def get_storage_enclosure_power(expander_id):
         interface = dbus.Interface(object, DBUS_INTERFACE)
 
         scale = interface.Get(SENSOR_HWMON_INTERFACE, 'scale')
+        adjust = interface.Get(SENSOR_HWMON_INTERFACE, 'adjust')
         value = interface.Get(SENSOR_VALUE_INTERFACE, 'value')
 
-        result['power_consumption'] = value * math.pow(10, scale)
+        result['power_consumption'] = value * math.pow(10, scale) / adjust
 
         object = bus.get_object(DBUS_NAME, sensor_table[3]) # HDD_HSC_Volt_Out
         interface = dbus.Interface(object, DBUS_INTERFACE)

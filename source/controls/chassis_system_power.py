@@ -92,7 +92,7 @@ def get_chassis_power():
         scale = interface.Get(SENSOR_HWMON_INTERFACE, 'scale')
         value = interface.Get(SENSOR_VALUE_INTERFACE, 'value')
         
-        result['power_consumed_watts'] = value * math.pow(10, scale) * adjust
+        result['power_consumed_watts'] = value * math.pow(10, scale) / adjust
 
         #Voltages
         for index in range(0, len(sensor_power_voltage_table)-1):
