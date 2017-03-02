@@ -28,6 +28,8 @@ SENSOR_VALUE_INTERFACE = 'org.openbmc.SensorValue'
 SENSOR_THRESHOLD_INTERFACE = 'org.openbmc.SensorThresholds'
 SENSOR_HWMON_INTERFACE = 'org.openbmc.HwmonSensor'
 
+MAX_PSU_NUM = 2
+
 def get_sensor_name(sensor_path):
     path_list = sensor_path.split("/")
     return path_list[-1]
@@ -89,6 +91,7 @@ def get_chassis_power():
         adjust = interface.Get(SENSOR_HWMON_INTERFACE, 'adjust')
         scale = interface.Get(SENSOR_HWMON_INTERFACE, 'scale')
         value = interface.Get(SENSOR_VALUE_INTERFACE, 'value')
+        
         result['power_consumed_watts'] = value * math.pow(10, scale) * adjust
 
         #Voltages
@@ -114,43 +117,29 @@ def get_chassis_power():
             value = interface.Get(SENSOR_VALUE_INTERFACE, 'value')
             
             property['reading_value'] = value * math.pow(10, scale)
+            
             result['Voltages'][str(index)] = property
 
         #PowerSupplies
-        if GetPsuPresent(1) == 1:
-            object = bus.get_object(DBUS_NAME, sensor_power_powersupplies_table[0])
-            interface = dbus.Interface(object, DBUS_INTERFACE)
+        for index in range(0, MAX_PSU_NUM):
+            if GetPsuPresent(index+1) == 1:
+                object = bus.get_object(DBUS_NAME, sensor_power_powersupplies_table[index])
+                interface = dbus.Interface(object, DBUS_INTERFACE)
+                
+                psu_name = 'psu' + str(index+1)
 
-            result['psu1_power_capacity'] = interface.Get(SENSOR_VALUE_INTERFACE, 'value')
-            result['psu1_power_output_watt'] = ''
+                result[psu_name + '_power_capacity'] = interface.Get(SENSOR_VALUE_INTERFACE, 'value')
+                result[psu_name + '_power_output_watt'] = ''
 
-            dbusctl = obmc_dbuslib.ObmcRedfishProviders()
-            manufacture_data = dbusctl.get_fru_info('POWERSUPPLYUNIT1')
+                dbusctl = obmc_dbuslib.ObmcRedfishProviders()
+                manufacture_data = dbusctl.get_fru_info('POWERSUPPLYUNIT'+str(index+1))
 
-            result['psu1_model_number'] = manufacture_data['model_number']
-            result['psu1_serial_number'] = manufacture_data['serial_number']
+                result[psu_name + '_model_number'] = manufacture_data['model_number']
+                result[psu_name + '_serial_number'] = manufacture_data['serial_number']
+                result[psu_name + '_manufacturer_name'] = ''
+                result[psu_name + '_serial_number'] = ''
+                result[psu_name + '_part_number'] = ''
 
-            result['psu1_manufacturer_name'] = ''
-            result['psu1_firmware_version'] = ''
-            result['psu1_part_number'] = ''
-        
-        if GetPsuPresent(2) == 1:
-            object = bus.get_object(DBUS_NAME, sensor_power_powersupplies_table[1])
-            interface = dbus.Interface(object, DBUS_INTERFACE)
-
-            result['psu2_power_capacity'] = interface.Get(SENSOR_VALUE_INTERFACE, 'value')
-            result['psu2_power_output_watt'] = ''
-
-            dbusctl = obmc_dbuslib.ObmcRedfishProviders()
-            manufacture_data = dbusctl.get_fru_info('POWERSUPPLYUNIT2')
-
-            result['psu2_model_number'] = manufacture_data['model_number']
-            result['psu2_serial_number'] = manufacture_data['serial_number']
-
-            result['psu2_manufacturer_name'] = ''
-            result['psu2_firmware_version'] = ''
-            result['psu2_part_number'] = ''
- 
     except Exception, e:
         return set_failure_dict(('Exception:', e), completion_code.failure)
 
