@@ -238,6 +238,7 @@ sensor_expander1_temperature_table =\
     "/org/openbmc/sensors/StorageEnclosure1/HDD1_HSC_Temp",\
     "/org/openbmc/sensors/StorageEnclosure1/HDD1_Top_Temp",\
     "/org/openbmc/sensors/StorageEnclosure1/HDD1_Bot_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure1/HDD1_Expander_Temp",\
     "/org/openbmc/sensors/StorageEnclosure1/HDD1_Drive1_Temp",\
     "/org/openbmc/sensors/StorageEnclosure1/HDD1_Drive2_Temp",\
     "/org/openbmc/sensors/StorageEnclosure1/HDD1_Drive3_Temp",\
@@ -266,6 +267,7 @@ sensor_expander2_temperature_table =\
     "/org/openbmc/sensors/StorageEnclosure2/HDD2_HSC_Temp",\
     "/org/openbmc/sensors/StorageEnclosure2/HDD2_Top_Temp",\
     "/org/openbmc/sensors/StorageEnclosure2/HDD2_Bot_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure2/HDD2_Expander_Temp",\
     "/org/openbmc/sensors/StorageEnclosure2/HDD2_Drive1_Temp",\
     "/org/openbmc/sensors/StorageEnclosure2/HDD2_Drive2_Temp",\
     "/org/openbmc/sensors/StorageEnclosure2/HDD2_Drive3_Temp",\
@@ -294,6 +296,7 @@ sensor_expander3_temperature_table =\
     "/org/openbmc/sensors/StorageEnclosure3/HDD3_HSC_Temp",\
     "/org/openbmc/sensors/StorageEnclosure3/HDD3_Top_Temp",\
     "/org/openbmc/sensors/StorageEnclosure3/HDD3_Bot_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure3/HDD3_Expander_Temp",\
     "/org/openbmc/sensors/StorageEnclosure3/HDD3_Drive1_Temp",\
     "/org/openbmc/sensors/StorageEnclosure3/HDD3_Drive2_Temp",\
     "/org/openbmc/sensors/StorageEnclosure3/HDD3_Drive3_Temp",\
@@ -323,6 +326,7 @@ sensor_expander4_temperature_table =\
     "/org/openbmc/sensors/StorageEnclosure4/HDD4_HSC_Temp",\
     "/org/openbmc/sensors/StorageEnclosure4/HDD4_Top_Temp",\
     "/org/openbmc/sensors/StorageEnclosure4/HDD4_Bot_Temp",\
+    "/org/openbmc/sensors/StorageEnclosure4/HDD4_Expander_Temp",\
     "/org/openbmc/sensors/StorageEnclosure4/HDD4_Drive1_Temp",\
     "/org/openbmc/sensors/StorageEnclosure4/HDD4_Drive2_Temp",\
     "/org/openbmc/sensors/StorageEnclosure4/HDD4_Drive3_Temp",\
