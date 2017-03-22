@@ -13,7 +13,7 @@ import math
 import time
 
 sys.path.append ("/usr/sbin")
-import exp_lib
+#import exp_lib
 
 from obmc.dbuslib.bindings import get_dbus, DbusProperties, DbusObjectManager
 from controls.utils import set_failure_dict, completion_code
@@ -26,7 +26,7 @@ SENSOR_THRESHOLD_INTERFACE = 'org.openbmc.SensorThresholds'
 SENSOR_HWMON_INTERFACE = 'org.openbmc.HwmonSensor'
 
 bus = get_dbus()
-exp = exp_lib.expander()
+#exp = exp_lib.expander()
 
 MAX_EXPANDER_DRIVES = 22
 
@@ -61,6 +61,14 @@ def get_id_led_state(expander_id): #TBD
 
 def get_expander_firmware_version(expander_id):
     result = {}
+    result['SE_ID'] = expander_id
+    result['firmware_version'] = ''
+    result[completion_code.cc_key] = completion_code.success
+    return result
+
+'''
+def get_expander_firmware_version(expander_id):
+    result = {}
 
     try:
         output = exp.GetExpanderInfo(expander_id-1)
@@ -91,6 +99,7 @@ def get_expander_firmware_version(expander_id):
     result[completion_code.cc_key] = completion_code.success
 
     return result
+'''
 
 def get_expander_fru(expander_id):
     result = {}
@@ -106,7 +115,21 @@ def get_expander_fru(expander_id):
     result[completion_code.cc_key] = completion_code.success
 
     return result
- 
+
+def get_expander_drive_status(expander_id, drive_id):
+    result = {}
+    result['SE_ID'] = expander_id
+    result['DRIVE_ID'] = drive_id
+    result['drive_id_led'] = 'N/A'
+    result['drive_revision'] = 'N/A'
+    result['drive_status'] = 'N/A'
+    result['drive_speed'] = 'N/A'
+    result['drive_status'] = 'Ready'
+    result['drive_speed'] = '1.5G'
+    result[completion_code.cc_key] = completion_code.success
+    return result
+
+''' 
 def get_expander_drive_status(expander_id, drive_id):
 
     expander_drive_status = [-1]*MAX_EXPANDER_DRIVES
@@ -168,7 +191,25 @@ def get_expander_drive_status(expander_id, drive_id):
     result[completion_code.cc_key] = completion_code.success
 
     return result
+'''
 
+def set_expander_drive_power(expander_id, drive_id, state):
+    result = {}
+    result[completion_code.cc_key] = completion_code.success
+    return result
+
+def get_expander_power(expander_id):
+    result = {}
+    result[completion_code.cc_key] = completion_code.success
+    return result
+
+def set_expander_power(setting, expander_id):
+    result = {}
+    result['power_state'] = 'Off'
+    result[completion_code.cc_key] = completion_code.success
+    return result
+
+'''
 def set_expander_drive_power(expander_id, drive_id, state):
 
     try:
@@ -191,7 +232,6 @@ def set_expander_drive_power(expander_id, drive_id, state):
     result[completion_code.cc_key] = completion_code.success
 
     return result
-
 def get_expander_power(expander_id):
     result = {}
     try:
@@ -232,7 +272,8 @@ def set_expander_power(setting, expander_id):
     result[completion_code.cc_key] = completion_code.success
 
     return result
-    
+'''
+
 sensor_expander1_temperature_table =\
 [\
     "/org/openbmc/sensors/StorageEnclosure1/HDD1_HSC_Temp",\

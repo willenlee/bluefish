@@ -6,8 +6,8 @@
 from utils import *
 import sys
 sys.path.append('/usr/sbin')
-import exp_lib
-exp =  exp_lib.expander()
+#import exp_lib
+#exp =  exp_lib.expander()
 
 DEFAULT_OUTDATA_SIZE = 256
 
@@ -18,7 +18,8 @@ def se_i2c_master_write_read(se_id, writedata):
     exp_id = int(se_id) - 1
     write_data = str(writedata.replace('0x', ''))
     try:
-        rdata = exp.handle_request(int(exp_id), write_data, DEFAULT_OUTDATA_SIZE)
+        #rdata = exp.handle_request(int(exp_id), write_data, DEFAULT_OUTDATA_SIZE)
+        rdata = 0
 
     except Exception, e:
         return set_failure_dict("Master Write Read failed", completion_code.failure)
