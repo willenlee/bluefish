@@ -8,6 +8,7 @@ import controls.manage_user
 import controls.manage_logentry
 import controls.manage_chassis
 from authentication import pre_check_slot_id
+import controls.chassis_system
 
 def validate_action_parameters (validation):
     """
@@ -185,6 +186,20 @@ def post_chassis_se_master_write_read(slot_id, se_id):
         return check_action_result(result)
     return view_helper.return_redfish_resource ("chassis_se_master_write_read", values = result)
 
+
+@auth_basic (authentication.validate_user)
+def post_chassis_action_power_on(slot_id):
+
+    result = controls.chassis_system.post_chassis_action_power_on()
+    
+    return check_action_result (result)
+
+def post_chassis_action_power_off(slot_id):
+
+    result = controls.chassis_system.post_chassis_action_power_off()
+    
+    return check_action_result (result)
+############################
 ############################
 # Account service components
 ############################

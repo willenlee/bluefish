@@ -45,4 +45,23 @@ def get_chassis_fru():
     result[completion_code.cc_key] = completion_code.success
 
     return result
-    
+
+def post_chassis_action_power_on():
+    result = {} 
+
+    dbusctl = obmc_dbuslib.ObmcRedfishProviders() 
+    pydata = dbusctl.power_control('On')  
+
+    result[completion_code.cc_key] = completion_code.success
+
+    return result
+
+def post_chassis_action_power_off():
+    result = {} 
+
+    dbusctl = obmc_dbuslib.ObmcRedfishProviders() 
+    pydata = dbusctl.power_control('ForceOff')  
+
+    result[completion_code.cc_key] = completion_code.success
+
+    return result

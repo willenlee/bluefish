@@ -217,6 +217,16 @@ REDFISH_RESOURCES = {
         "/redfish/v1/Chassis/System/<slot_id>/StorageEnclosure<se_id>/Thermal",
         "Chassis/SEThermal.tpl"),
         get = get_handler.get_chassis_storage_enclosure_thermal),
+    "chassis_on" : redfish_resource (
+        common = (
+        "/redfish/v1/Chassis/System/<slot_id>/Action/On",
+        ""),
+        post = post_handler.post_chassis_action_power_on),
+    "chassis_off" : redfish_resource (
+        common = (
+        "/redfish/v1/Chassis/System/<slot_id>/Action/Off",
+        ""),
+        post = post_handler.post_chassis_action_power_off),
     
     #########################
     # BMC components

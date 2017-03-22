@@ -9,7 +9,7 @@
   "@odata.id": "/redfish/v1/Chassis",
   "@odata.type": "#ChassisCollection.ChassisCollection",
   "Name": "Chassis Collection",
-  "Members@odata.count": 6,
+  "Members@odata.count": 8,
   "Members": [
     {
       "@odata.id": "/redfish/v1/Chassis/System/{{SLOT_ID}}"
@@ -28,6 +28,12 @@
     },
     {
       "@odata.id": "/redfish/v1/Chassis/System/{{SLOT_ID}}/StorageEnclosure4"
+    },
+    {
+      "@odata.id": "/redfish/v1/Chassis/System/{{SLOT_ID}}/chassis_on"
+    },
+    {
+      "@odata.id": "/redfish/v1/Chassis/System/{{SLOT_ID}}/chassis_off"
     }
   ]
 }
